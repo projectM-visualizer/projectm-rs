@@ -1,0 +1,22 @@
+[package]
+name = "projectm-rs"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.59"
+authors = ["AnomieVision <anomievision@users.noreply.github.com>"]
+description = "Bindings for ProjectM"
+license = "LGPL"
+repository = "https://github.com/anomievision/projectm-rs"
+keywords = ["audio", "sound", "visuals", "projectm", "live"]
+categories = ["multimedia::video", "multimedia::rendering"]
+readme = "README.md"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+
+[build-dependencies]
+# bindgen = "0.60.1"
+cmake = "0.1.48"
