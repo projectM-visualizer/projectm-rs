@@ -1,0 +1,6 @@
+[submodule "src/projectm"]
+	path = src/projectm
+	url = https://github.com/anomievision/projectm
+[submodule "projectm"]
+	path = projectm
+	url = https://github.com/anomievision/projectm
