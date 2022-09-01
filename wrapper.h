@@ -1,1 +1,1 @@
-#include <libprojectM/projectM.h>
+#include <projectM.h>

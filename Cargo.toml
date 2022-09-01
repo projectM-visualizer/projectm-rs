@@ -1,12 +1,12 @@
 [package]
 name = "projectm-rs"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 rust-version = "1.59"
 authors = ["AnomieVision <anomievision@users.noreply.github.com>"]
 description = "Bindings for ProjectM"
 license = "	LGPL-3.0-or-later"
-repository = "https://github.com/anomievision/projectm-rs"
+repository = "https://github.com/projectm/projectm-rs" #https://github.com/anomievision/projectm-rs
 keywords = ["visualization", "audio", "sound",  "projectm"]
 categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
