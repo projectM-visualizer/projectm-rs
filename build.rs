@@ -1,4 +1,4 @@
-// use std::env;
+use std::env;
 // use std::path::PathBuf;
 
 fn main() {
@@ -6,8 +6,13 @@ fn main() {
   println!("cargo:rerun-if-changed=wrapper.h");
   let dst = cmake::build("projectm");
   println!("cargo:rustc-link-search=native={}/lib", dst.display());
-  println!("cargo:rustc-link-lib=dylib=projectMd");
 
+  if Ok("release".to_owned()) == env::var("PROFILE") {
+    println!("cargo:rustc-link-lib=dylib=projectM");
+  } else {
+    println!("cargo:rustc-link-lib=dylib=projectMd");
+  }
+  
   // // The bindgen::Builder is the main entry point
   // // to bindgen, and lets you build up options for
   // // the resulting bindings.
