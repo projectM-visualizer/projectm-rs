@@ -6,7 +6,7 @@ fn main() {
   println!("cargo:rerun-if-changed=wrapper.h");
   let dst = cmake::build("projectm");
   println!("cargo:rustc-link-search=native={}/lib", dst.display());
-  println!("cargo:rustc-link-lib=static=projectMd");
+  println!("cargo:rustc-link-lib=dylib=projectMd");
 
   // // The bindgen::Builder is the main entry point
   // // to bindgen, and lets you build up options for
