@@ -15,16 +15,16 @@
 <h3 align="center">ProjectM-rs</h3>
 
   <p align="center">
-    Rust bindings for <a href="https://github.com/projectM-visualizer/projectm">ProjectM</a>, built using Bindgen
+    Rust bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>, built using Bindgen
     <br />
     <br />
-    <a href="https://docs.rs/projectm-rs/0.1.4/projectm_rs/">Docs</a>
-    .
-    <a href="https://github.com/projectM-visualizer/frontend-sdl2-rust">Example</a>
+    <a href="https://docs.rs/projectm-rs/0.1.4/projectm_rs/" target="_blank">Docs</a>
     ·
-    <a href="https://github.com/projectM-visualizer/projectm-rs/issues">Report Bug</a>
+    <a href="https://github.com/anomievision/frontend-sdl2-rust" target="_blank">Example</a>
     ·
-    <a href="https://github.com/projectM-visualizer/projectm-rs/issues">Request Feature</a>
+    <a href="https://github.com/projectM-visualizer/projectm-rs/issues" target="_blank">Report Bug</a>
+    ·
+    <a href="https://github.com/projectM-visualizer/projectm-rs/issues" target="_blank">Request Feature</a>
   </p>
 </div>
 
@@ -59,8 +59,6 @@ To get this crate up and running properly, you'll need to install some prerequis
 
 Depending on the OS/distribution and packaging system, libraries might be split into separate packages with binaries and
 development files. To build projectM, both binaries and development files need to be installed.
-
-<br />
 
 #### General build dependencies for all platforms:
 
