@@ -20,7 +20,7 @@
     <br />
     <a href="https://docs.rs/projectm-rs/0.1.4/projectm_rs/" target="_blank">Docs</a>
     ·
-    <a href="https://github.com/anomievision/frontend-sdl2-rust" target="_blank">Example</a>
+    <a href="https://github.com/projectM-visualizer/frontend-sdl2-rust" target="_blank">Example</a>
     ·
     <a href="https://github.com/projectM-visualizer/projectm-rs/issues" target="_blank">Report Bug</a>
     ·
