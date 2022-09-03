@@ -136,7 +136,7 @@ Distributed under the LGPL-2.1 license. See `LICENSE` for more information.
 <!-- SUPPORT -->
 ## Support
 
-![Discord](https://img.shields.io/discord/737206408482914387?style=for-the-badge)
+[![Discord][discord-shield]][discord-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
