@@ -20,3 +20,10 @@ build = "build.rs"
 [build-dependencies]
 # bindgen = "0.60.1"
 cmake = "0.1.48"
+
+[features]
+default = ["linux-x64"]
+windows-x64 = []
+linux-x64 = []
+macos-x64 = []
+emscripten-x32 = []

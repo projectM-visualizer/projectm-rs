@@ -1901,3 +1901,12 @@ extern "C" {
         channels: projectm_channels,
     );
 }
+
+#[test]
+fn bindgen_test_lib_linked() {
+    let string: u32 = 8;
+
+    unsafe {
+        projectm_alloc_string(string);
+    }
+}
