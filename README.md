@@ -15,7 +15,7 @@
 <h3 align="center">ProjectM-rs</h3>
 
   <p align="center">
-    Rust bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>, built using Bindgen
+    Rust bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>
     <br />
     <br />
     <a href="https://docs.rs/projectm-rs/0.1.4/projectm_rs/" target="_blank">Docs</a>
@@ -87,21 +87,11 @@ development files. To build projectM, both binaries and development files need t
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-```
-cargo.toml
+```V
+# Cargo.toml
 
 [dependencies]
 projectm-rs = "*" # recommended until project is stable
-```
-```
-main.rs
-
-use projectm_rs;
-
-// unsafe is needed for each call to projecm_rs. Will resolve soon with a safe wrapper.
-let projectm_handle = unsafe {
-    projectm_rs::projectm_create_settings(&settings, 0)
-};
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

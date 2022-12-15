@@ -10,15 +10,13 @@ repository = "https://github.com/projectM-visualizer/projectm-rs" #https://githu
 keywords = ["visualization", "audio", "sound",  "projectm"]
 categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
-build = "build.rs"
-
-crate-type = ["dylib"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+libc = "0.2.138"
+projectm-sys = { version = "1.0.0", path = "/home/avdev/AnomieVision/projectm-sys" }
 
+# *needed for test_sdl*
+sdl2 = "0.35.2"
 
-[build-dependencies]
-# bindgen = "0.60.1"
-cmake = "0.1.48"
+[[example]]
+name = "sdl"
