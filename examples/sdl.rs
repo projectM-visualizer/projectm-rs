@@ -2,7 +2,7 @@ use std::fs::{read_to_string};
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use projectm_rs::*;
+use projectm_rs::core::*;
 
 fn main() -> Result<(), String> {
     // setup sdl
@@ -27,7 +27,7 @@ fn main() -> Result<(), String> {
         texture_size: 512,
         window_width: 1280,
         window_height: 720,
-        preset_duration: 15.0,
+        preset_duration: 3.0,
         soft_cut_duration: 15.0,
         hard_cut_duration: 60.0,
         hard_cut_enabled: false,
@@ -45,9 +45,18 @@ fn main() -> Result<(), String> {
     projectm::set_window_size(projectm_handle, 800, 600);
     println!("ProjectM -> Initialized");
 
+    
+    fn on_preset_switch_requested(is_hard_cut: bool) {
+        println!("{:?}", is_hard_cut);
+    }
 
-    // projectm::set_preset_switch_requested_event_callback(instance, callback, user_data); 
-    // projectm::set_preset_switch_failed_event_callback(instance, callback, user_data);
+    fn on_preset_switch_failed(preset_filename: String, message: String) {
+        println!("{:?}", preset_filename);
+        println!("{:?}", message);
+    }
+
+    projectm::set_preset_switch_requested_event_callback(projectm_handle, on_preset_switch_requested); 
+    projectm::set_preset_switch_failed_event_callback(projectm_handle, on_preset_switch_failed);
 
     // events
     let mut event_pump = sdl_context.event_pump()?;
@@ -308,7 +317,7 @@ fn test_load_preset_file(projectm_handle: projectm_handle) {
 
 fn test_load_preset_data(projectm_handle: projectm_handle) {
     println!("Test -> load_preset_data");
-    let data = read_to_string("presets/103-multiple-eqn.milk").unwrap();
+    let data = read_to_string("presets/207-wave.milk").unwrap();
     projectm::load_preset_data(projectm_handle, &data, false);
 }
 
