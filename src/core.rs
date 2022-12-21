@@ -161,17 +161,29 @@ impl projectm {
     }
 
     pub fn load_preset_data(instance: projectm_handle, data: &String, smooth_transition: bool) {
+        println!("{:?}", data);
         unsafe { ffi::projectm_load_preset_data(instance, data.as_bytes().as_ptr() as *mut i8, smooth_transition) };
     }
 
-    pub fn set_preset_switch_requested_event_callback(instance: projectm_handle, callback: ffi::projectm_preset_switch_requested_event, user_data: *mut ()) {
-        // TODO: Needs improving
-        unsafe { ffi::projectm_set_preset_switch_requested_event_callback(instance, callback, user_data as *mut ::std::os::raw::c_void) };
+    pub fn set_preset_switch_requested_event_callback<F: FnMut(bool)>(instance: projectm_handle, callback: F) {
+        unsafe extern "C" fn trampoline<F: FnMut(bool)>(is_hard_cut: bool, user_data: *mut std::os::raw::c_void) {
+          unsafe { (*user_data.cast::<F>())(is_hard_cut) }
+        }
+        unsafe { ffi::projectm_set_preset_switch_requested_event_callback(instance, Some(trampoline::<F>), (Box::leak(Box::new(callback)) as *mut F).cast::<std::os::raw::c_void>()) }
     }
 
-    pub fn set_preset_switch_failed_event_callback(instance: projectm_handle, callback: ffi::projectm_preset_switch_failed_event, user_data: *mut ()) {
-        // TODO: Needs improving
-        unsafe { ffi::projectm_set_preset_switch_failed_event_callback(instance, callback, user_data as *mut ::std::os::raw::c_void) };
+    pub fn set_preset_switch_failed_event_callback<F: FnMut(String, String)>(instance: projectm_handle, callback: F) {
+        unsafe extern "C" fn trampoline<F: FnMut(String, String)>(preset_filename: *const i8, message: *const i8, user_data: *mut std::os::raw::c_void) {
+            let preset_filename_str = unsafe { std::ffi::CStr::from_ptr(preset_filename) };
+            let preset_filename_str_slice = preset_filename_str.to_str().unwrap();
+            let preset_filename = preset_filename_str_slice.to_owned();
+
+            let message_str = unsafe { std::ffi::CStr::from_ptr(message) };
+            let message_str_slice = message_str.to_str().unwrap();
+            let message = message_str_slice.to_owned();
+            unsafe { (*user_data.cast::<F>())(preset_filename, message) }
+        }
+        unsafe { ffi::projectm_set_preset_switch_failed_event_callback(instance, Some(trampoline::<F>), (Box::leak(Box::new(callback)) as *mut F).cast::<std::os::raw::c_void>()) }
     }
 
     pub fn is_preset_locked(instance: projectm_handle) -> bool {
