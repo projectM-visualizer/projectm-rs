@@ -12,10 +12,10 @@
 
 <br />
 
-<h3 align="center">ProjectM-rs</h3>
+<h3 align="center">projectM-rs</h3>
 
   <p align="center">
-    Rust bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>
+    Safe-wrapper bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>
     <br />
     <br />
     <a href="https://docs.rs/projectm-rs/0.1.4/projectm_rs/" target="_blank">Docs</a>
@@ -91,7 +91,7 @@ development files. To build projectM, both binaries and development files need t
 # Cargo.toml
 
 [dependencies]
-projectm-rs = "*" # recommended until project is stable
+projectm-rs = { version = "1.0", features = [] }   # Available features: playlist
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
