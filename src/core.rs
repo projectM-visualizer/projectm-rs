@@ -8,31 +8,9 @@
 //! # Example
 //!
 //! ```
-//! use projectm_rs::*;
+//! use projectm_rs::core::*;
 //!
-//! let settings = Settings {
-//!     mesh_x: 96,
-//!     mesh_y: 54,
-//!     fps: 30,
-//!     texture_size: 512,
-//!     window_width: 1280,
-//!     window_height: 720,
-//!     preset_duration: 15.0,
-//!     soft_cut_duration: 15.0,
-//!     hard_cut_duration: 60.0,
-//!     hard_cut_enabled: false,
-//!     hard_cut_sensitivity: 0.0,
-//!     beat_sensitivity: 0.5,
-//!     aspect_correction: true,
-//!     easter_egg: 0.5,
-//!     shuffle_enabled: true,
-//!     soft_cut_ratings_enabled: true,
-//!     preset_path: String::from("./presets"),
-//!     texture_path: String::from("./textures"),
-//!     data_path: String::from("./"),
-//!     ;
-//!
-//! let projectm_handle = projectm::create(&settings, 0);
+//! let projectm_handle = projectm::create();
 //! ```
 //!
 
@@ -41,15 +19,10 @@
 extern crate libc;
 extern crate projectm_sys as ffi;
 
-use libc::{c_int, strncpy};
-use std::ffi::{CStr, CString};
+use std::ffi::{CString};
 
 pub enum projectm {}
 pub type projectm_handle = *mut ffi::projectm;
-
-// TODO: Callbacks - Prefered types
-// pub type preset_switch_requested_event = Option<fn(is_hard_cut: bool, user_data: *mut ())>;
-// pub type preset_switch_failed_event = Option<fn(filename: &String, message: &String, user_data: *mut ())>;
 
 pub type projectm_channels = u32;
 pub const MONO: projectm_channels = 1;
@@ -81,19 +54,17 @@ impl projectm {
         unsafe {
             ffi::projectm_load_preset_file(
                 instance,
-                filename.as_bytes().as_ptr() as *mut i8,
+                filename.as_ptr() as *mut i8,
                 smooth_transition,
             )
         };
     }
 
     pub fn load_preset_data(instance: projectm_handle, data: &String, smooth_transition: bool) {
-        println!("{:?}", data);
-        let data_ptr = data.as_ptr();
         unsafe {
             ffi::projectm_load_preset_data(
                 instance,
-                data_ptr as *mut i8,
+                data.as_ptr() as *mut i8,
                 smooth_transition,
             )
         };

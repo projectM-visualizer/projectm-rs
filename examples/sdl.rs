@@ -88,7 +88,7 @@ fn main() -> Result<(), String> {
                     test_load_preset_file(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::K), .. } => {
-                    test_load_preset_data(projectm_handle); //not working
+                    test_load_preset_data(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::L), .. } => {
                     test_get_preset_locked(projectm_handle); //working
