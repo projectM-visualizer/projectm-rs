@@ -1,6 +1,6 @@
 [package]
 name = "projectm-rs"
-version = "0.1.7"
+version = "1.0.0"
 edition = "2021"
 rust-version = "1.65"
 authors = ["AnomieVision <anomievision@gmail.com.com>"]
@@ -13,7 +13,7 @@ readme = "README.md"
 
 [dependencies]
 libc = "0.2.139"
-projectm-sys = { version = "1.0.3", features = [], path = "/home/avdev/AnomieVision/projectm-sys" }
+projectm-sys = { version = "1.0.3", features = [] }
 
 # *needed for test_sdl*
 sdl2 = "0.35.2"
