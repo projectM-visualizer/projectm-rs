@@ -12,13 +12,13 @@
 
 <br />
 
-<h3 align="center">ProjectM-rs</h3>
+<h3 align="center">projectM-rs</h3>
 
   <p align="center">
-    Rust bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>, built using Bindgen
+    Safe-wrapper bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>
     <br />
     <br />
-    <a href="https://docs.rs/projectm-rs/0.1.4/projectm_rs/" target="_blank">Docs</a>
+    <a href="https://docs.rs/projectm-rs/latest" target="_blank">Docs</a>
     ·
     <a href="https://github.com/projectM-visualizer/frontend-sdl2-rust" target="_blank">Example</a>
     ·
@@ -88,25 +88,23 @@ development files. To build projectM, both binaries and development files need t
 ## Usage
 
 ```
-cargo.toml
+# Cargo.toml
 
 [dependencies]
-projectm-rs = "*" # recommended until project is stable
-```
-```
-main.rs
-
-use projectm_rs;
-
-// unsafe is needed for each call to projecm_rs. Will resolve soon with a safe wrapper.
-let projectm_handle = unsafe {
-    projectm_rs::projectm_create_settings(&settings, 0)
-};
+projectm-rs = { version = "1.0", features = [] }   # Available features: playlist
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- EXAMPLES -->
+## Example
+You can easily try it out yourself, by running the command below.
 
+```
+cargo run --example sdl
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 ## Contributing
