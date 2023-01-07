@@ -10,7 +10,7 @@ fn main() -> Result<(), String> {
     let video_subsystem = sdl_context.video()?;
 
     // create window
-    let window = video_subsystem.window("projectm-rs-test-sdl", 800, 600)
+    let window = video_subsystem.window("projectm-rs-test-sdl", 1024, 768)
         .position_centered()
         .build()
         .expect("could not initialize video subsystem");
@@ -19,45 +19,14 @@ fn main() -> Result<(), String> {
     let mut canvas = window.into_canvas().build()
         .expect("could not make a canvas");
 
-    // projectm::settings
-    let settings = settings {
-        mesh_x: 96,
-        mesh_y: 54,
-        fps: 30,
-        texture_size: 512,
-        window_width: 1280,
-        window_height: 720,
-        preset_duration: 3.0,
-        soft_cut_duration: 15.0,
-        hard_cut_duration: 60.0,
-        hard_cut_enabled: false,
-        hard_cut_sensitivity: 0.0,
-        beat_sensitivity: 0.5,
-        aspect_correction: true,
-        easter_egg: 0.5,
-        texture_path: String::from("./textures"),
-        data_path: String::from("./"),
-    };
-
     // projectm::init
-    let projectm_handle = projectm::create(&settings);
-   
-    projectm::set_window_size(projectm_handle, 800, 600);
-    println!("ProjectM -> Initialized");
-
+    let projectm_handle = projectm::create();
     
-    fn on_preset_switch_requested(is_hard_cut: bool) {
-        println!("{:?}", is_hard_cut);
-    }
+    // projectm::settings
+    initiate_settings(projectm_handle);
 
-    fn on_preset_switch_failed(preset_filename: String, message: String) {
-        println!("{:?}", preset_filename);
-        println!("{:?}", message);
-    }
-
-    projectm::set_preset_switch_requested_event_callback(projectm_handle, on_preset_switch_requested); 
-    projectm::set_preset_switch_failed_event_callback(projectm_handle, on_preset_switch_failed);
-
+    println!("ProjectM -> Initialized");
+    
     // events
     let mut event_pump = sdl_context.event_pump()?;
 
@@ -74,7 +43,7 @@ fn main() -> Result<(), String> {
                     test_destroy(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::W), .. } => {
-                    test_get_settings(projectm_handle); //working
+                    test_set_texture_search_paths(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::E), .. } => {
                     test_get_and_set_beat_sensitivity(projectm_handle); //working
@@ -95,13 +64,10 @@ fn main() -> Result<(), String> {
                     test_get_and_set_preset_duration(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::O), .. } => {
-                    test_get_and_set_mesh_size(projectm_handle); //not working
+                    test_get_and_set_mesh_size(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::P), .. } => {
                     test_get_and_set_fps(projectm_handle); //working
-                },
-                Event::KeyDown { keycode: Some(Keycode::A), .. } => {
-                    test_get_paths(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::S), .. } => {
                     test_get_and_set_aspect_correction(projectm_handle); //working
@@ -122,13 +88,13 @@ fn main() -> Result<(), String> {
                     test_load_preset_file(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::K), .. } => {
-                    test_load_preset_data(projectm_handle); //not working
+                    test_load_preset_data(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::L), .. } => {
-                    test_is_preset_locked(projectm_handle); //working
+                    test_get_preset_locked(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::Z), .. } => {
-                    test_lock_preset(projectm_handle); //working
+                    test_set_preset_locked(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::X), .. } => {
                     test_touch(projectm_handle); //working
@@ -160,6 +126,31 @@ fn main() -> Result<(), String> {
     Ok(())
 }
 
+fn initiate_settings(projectm_handle: projectm_handle) {
+    projectm::set_window_size(projectm_handle, 1024, 768);
+    projectm::set_mesh_size(projectm_handle, 32, 24);
+    projectm::set_soft_cut_duration(projectm_handle, 3.0);
+    projectm::set_preset_duration(projectm_handle, 10.0);
+    projectm::set_easter_egg(projectm_handle, 0.0);
+    projectm::set_hard_cut_enabled(projectm_handle, false);
+    projectm::set_hard_cut_duration(projectm_handle, 1.0);
+    projectm::set_beat_sensitivity(projectm_handle, 1.0);
+    projectm::set_aspect_correction(projectm_handle, true);
+    projectm::set_fps(projectm_handle, 60);
+
+    fn on_preset_switch_requested(is_hard_cut: bool) {
+        println!("on_preset_switch_requested:is_hard_cut:{:?}", is_hard_cut);
+    }
+
+    fn on_preset_switch_failed(preset_filename: String, message: String) {
+        println!("on_preset_switch_failed:preset_filename:{:?}", preset_filename);
+        println!("on_preset_switch_failed:message:{:?}", message);
+    }
+
+    projectm::set_preset_switch_requested_event_callback(projectm_handle, on_preset_switch_requested); 
+    projectm::set_preset_switch_failed_event_callback(projectm_handle, on_preset_switch_failed);
+}
+
 fn generate_random_audio_data(projectm_handle: projectm_handle)
 {
     let mut pcm_data: [[i16; 512]; 2] = [[0; 512]; 2];
@@ -185,10 +176,14 @@ fn test_destroy(projectm_handle: projectm_handle) {
     projectm::destroy(projectm_handle);
 }
 
-fn test_get_settings(projectm_handle: projectm_handle) {
-    println!("Test -> get_settings");
-    let settings = projectm::get_settings(projectm_handle);
-    println!("{:?}", settings);
+fn test_set_texture_search_paths(projectm_handle: projectm_handle) {
+    println!("Test -> set_texture_search_paths");
+    let mut search_paths = Vec::new();
+    search_paths.push("./examples".to_string());
+    search_paths.push("./presets".to_string());
+    let count = search_paths.len();
+
+    projectm::set_texture_search_paths(projectm_handle, search_paths, count);
 }
 
 fn test_get_and_set_beat_sensitivity(projectm_handle: projectm_handle) {
@@ -263,15 +258,6 @@ fn test_get_and_set_fps(projectm_handle: projectm_handle) {
     println!("--fps: {}", projectm::get_fps(projectm_handle));
 }
 
-fn test_get_paths(projectm_handle: projectm_handle) {
-    println!("Test -> get_texture_path");
-    let texture_path = projectm::get_texture_path(projectm_handle);
-    println!("--texture_path: {}", texture_path);
-
-    println!("Test -> get_data_path");
-    println!("--data_path: {}", projectm::get_data_path(projectm_handle));
-}
-
 fn test_get_and_set_aspect_correction(projectm_handle: projectm_handle) {
     println!("Test -> get_aspect_correction");
     println!("--aspect_correction: {:?}", projectm::get_aspect_correction(projectm_handle));
@@ -317,21 +303,21 @@ fn test_load_preset_file(projectm_handle: projectm_handle) {
 
 fn test_load_preset_data(projectm_handle: projectm_handle) {
     println!("Test -> load_preset_data");
-    let data = read_to_string("presets/207-wave.milk").unwrap();
+    let data = read_to_string("presets/110-per_pixel.milk").unwrap();
     projectm::load_preset_data(projectm_handle, &data, false);
 }
 
-fn test_is_preset_locked(projectm_handle: projectm_handle) {
+fn test_get_preset_locked(projectm_handle: projectm_handle) {
     println!("Test -> is_preset_locked");
-    println!("--locked: {:?}", projectm::is_preset_locked(projectm_handle));
+    println!("--locked: {:?}", projectm::get_preset_locked(projectm_handle));
 }
 
-fn test_lock_preset(projectm_handle: projectm_handle) {
+fn test_set_preset_locked(projectm_handle: projectm_handle) {
     println!("Test -> lock_preset");
-    projectm::lock_preset(projectm_handle, true);
+    projectm::set_preset_locked(projectm_handle, true);
 
     println!("Test -> is_preset_locked");
-    println!("--locked: {:?}", projectm::is_preset_locked(projectm_handle));
+    println!("--locked: {:?}", projectm::get_preset_locked(projectm_handle));
 }
 
 fn test_touch(projectm_handle: projectm_handle) {
