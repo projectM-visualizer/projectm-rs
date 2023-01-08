@@ -174,7 +174,7 @@ impl projectm {
         unsafe { ffi::projectm_set_preset_duration(instance, seconds) }
     }
 
-    pub fn get_mesh_size(instance: projectm_handle) -> [usize; 2] {
+    pub fn get_mesh_size(instance: projectm_handle) -> (usize, usize) {
         #[derive(Debug, Default, Copy, Clone)]
         #[repr(C, packed)]
         struct Mesh {
@@ -192,7 +192,7 @@ impl projectm {
             );
         }
 
-        return [mesh.mesh_x, mesh.mesh_y];
+        return (mesh.mesh_x, mesh.mesh_y);
     }
 
     pub fn set_mesh_size(instance: projectm_handle, mesh_x: usize, mesh_y: usize) {
@@ -225,7 +225,7 @@ impl projectm {
         unsafe { ffi::projectm_set_easter_egg(instance, sensitivity) };
     }
 
-    pub fn get_window_size(instance: projectm_handle) -> [usize; 2] {
+    pub fn get_window_size(instance: projectm_handle) -> (usize, usize) {
         #[derive(Debug, Default, Copy, Clone)]
         #[repr(C, packed)]
         struct Mesh {
@@ -243,7 +243,7 @@ impl projectm {
             );
         }
 
-        return [window.width, window.height];
+        return (window.width, window.height);
     }
 
     pub fn set_window_size(instance: projectm_handle, width: usize, height: usize) {
