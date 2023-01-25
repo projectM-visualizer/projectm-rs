@@ -340,10 +340,6 @@ impl projectm {
         unsafe { ffi::projectm_opengl_render_frame(instance) };
     }
 
-    pub fn init_render_to_texture(instance: projectm_handle) -> u32 {
-        return unsafe { ffi::projectm_opengl_init_render_to_texture(instance) };
-    }
-
     // -----------------
     // Touch
     // -----------------

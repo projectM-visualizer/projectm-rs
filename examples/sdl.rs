@@ -85,30 +85,27 @@ fn main() -> Result<(), String> {
                     test_write_debug_image_on_next_frame(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::H), .. } => {
-                    test_init_render_to_texture(projectm_handle); //working
-                },
-                Event::KeyDown { keycode: Some(Keycode::J), .. } => {
                     test_load_preset_file(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::K), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::J), .. } => {
                     test_load_preset_data(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::L), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::K), .. } => {
                     test_get_preset_locked(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::Z), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::L), .. } => {
                     test_set_preset_locked(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::X), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::Z), .. } => {
                     test_touch(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::C), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::X), .. } => {
                     test_touch_drag(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::V), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::C), .. } => {
                     test_touch_destroy(projectm_handle); //working
                 },
-                Event::KeyDown { keycode: Some(Keycode::B), .. } => {
+                Event::KeyDown { keycode: Some(Keycode::V), .. } => {
                     test_touch_destroy_all(projectm_handle); //working
                 },
                 _ => {}
@@ -307,11 +304,6 @@ fn test_write_debug_image_on_next_frame(projectm_handle: projectm_handle) {
 
     // println!("Test -> write_debug_image_on_next_frame_without_filename");
     // projectm::write_debug_image_on_next_frame(projectm_handle, None);
-}
-
-fn test_init_render_to_texture(projectm_handle: projectm_handle) {
-    println!("Test -> init_render_to_texture");
-    println!("--texture_id: {:?}", projectm::init_render_to_texture(projectm_handle));
 }
 
 fn test_load_preset_file(projectm_handle: projectm_handle) {
