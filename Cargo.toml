@@ -13,7 +13,7 @@ readme = "README.md"
 
 [dependencies]
 libc = "0.2.139"
-projectm-sys = { version = "1.0.3", features = [] }
+projectm-sys = { version = "1.0.4", features = [] }
 
 # *needed for test_sdl*
 sdl2 = "0.35.2"

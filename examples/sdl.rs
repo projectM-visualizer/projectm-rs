@@ -43,30 +43,33 @@ fn main() -> Result<(), String> {
                     test_destroy(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::W), .. } => {
-                    test_set_texture_search_paths(projectm_handle); //working
+                    test_get_versions(); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::E), .. } => {
-                    test_get_and_set_beat_sensitivity(projectm_handle); //working
+                    test_set_texture_search_paths(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::R), .. } => {
-                    test_get_and_set_hard_cut_duration(projectm_handle); //working
+                    test_get_and_set_beat_sensitivity(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::T), .. } => {
-                    test_get_and_set_hard_cut_enabled(projectm_handle); //working
+                    test_get_and_set_hard_cut_duration(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::Y), .. } => {
-                    test_get_and_set_hard_cut_sensitivity(projectm_handle); //working
+                    test_get_and_set_hard_cut_enabled(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::U), .. } => {
-                    test_get_and_set_soft_cut_duration(projectm_handle); //working
+                    test_get_and_set_hard_cut_sensitivity(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::I), .. } => {
-                    test_get_and_set_preset_duration(projectm_handle); //working
+                    test_get_and_set_soft_cut_duration(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::O), .. } => {
-                    test_get_and_set_mesh_size(projectm_handle); //working
+                    test_get_and_set_preset_duration(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::P), .. } => {
+                    test_get_and_set_mesh_size(projectm_handle); //working
+                },
+                Event::KeyDown { keycode: Some(Keycode::A), .. } => {
                     test_get_and_set_fps(projectm_handle); //working
                 },
                 Event::KeyDown { keycode: Some(Keycode::S), .. } => {
@@ -170,12 +173,24 @@ fn generate_random_audio_data(projectm_handle: projectm_handle)
     projectm::pcm_add_int16(projectm_handle, &pcm_data[0][0], 512, 2)    
 }
 
-// -- Tests --
+// Tests: Core
 fn test_destroy(projectm_handle: projectm_handle) {
-    println!("Test: destroy");
+    println!("Test -> destroy");
     projectm::destroy(projectm_handle);
 }
 
+fn test_get_versions() {
+    println!("Test -> get_version_components");
+    println!("--version-components: {:?}", projectm::get_version_components());
+
+    println!("Test -> get_version_string");
+    println!("--version-string: {:?}", projectm::get_version_string());
+
+    println!("Test -> get_vcs_version_string");
+    println!("--vcs_version-string: {:?}", projectm::get_vcs_version_string());
+}
+
+// Tests: Parameters
 fn test_set_texture_search_paths(projectm_handle: projectm_handle) {
     println!("Test -> set_texture_search_paths");
     let mut search_paths = Vec::new();
@@ -287,7 +302,8 @@ fn test_get_and_set_window_size(projectm_handle: projectm_handle) {
 
 fn test_write_debug_image_on_next_frame(projectm_handle: projectm_handle) {
     println!("Test -> write_debug_image_on_next_frame");
-    projectm::write_debug_image_on_next_frame(projectm_handle);
+    let save_filename = String::from("test_debug_image.bmp");
+    projectm::write_debug_image_on_next_frame(projectm_handle, Some(&save_filename));
 }
 
 fn test_init_render_to_texture(projectm_handle: projectm_handle) {

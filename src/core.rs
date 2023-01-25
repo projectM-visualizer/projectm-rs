@@ -40,6 +40,10 @@ pub const TOUCH_TYPE_LINE: projectm_touch_type = 7;
 pub const TOUCH_TYPE_DOUBLE_LINE: projectm_touch_type = 8;
 
 impl projectm {
+    // -----------------
+    // Core
+    // -----------------
+
     pub fn create() -> *mut ffi::projectm {
         return unsafe { ffi::projectm_create() };
     }
@@ -47,8 +51,6 @@ impl projectm {
     pub fn destroy(instance: projectm_handle) {
         unsafe { ffi::projectm_destroy(instance) };
     }
-
-    // -----------------
 
     pub fn load_preset_file(instance: projectm_handle, filename: &String, smooth_transition: bool) {
         unsafe {
@@ -69,6 +71,58 @@ impl projectm {
             )
         };
     }
+
+    pub fn reset_textures(instance: projectm_handle) {
+        unsafe { ffi::projectm_reset_textures(instance) };
+    }
+
+    pub fn get_version_components() -> (i32, i32, i32) {
+        #[derive(Debug, Default, Copy, Clone)]
+        #[repr(C, packed)]
+        struct Version {
+            major: i32,
+            minor: i32,
+            patch: i32,
+        }
+
+        let mut version = Version::default();
+
+        unsafe {
+            ffi::projectm_get_version_components(
+                std::ptr::addr_of_mut!(version.major),
+                std::ptr::addr_of_mut!(version.minor),
+                std::ptr::addr_of_mut!(version.patch),
+            );
+        }
+
+        return (version.major, version.minor, version.patch);
+    }
+
+    pub fn get_version_string() -> String {
+        let get_version = unsafe { ffi::projectm_get_version_string() };
+        let version_str = unsafe { std::ffi::CStr::from_ptr(get_version) };
+        let version_str_slice = version_str.to_str().unwrap();
+        let version = version_str_slice.to_owned();
+
+        unsafe { ffi::projectm_free_string(get_version) };
+
+        return version;
+    }
+
+    pub fn get_vcs_version_string() -> String {
+        let get_vcs_version = unsafe { ffi::projectm_get_vcs_version_string() };
+        let vcs_version_str = unsafe { std::ffi::CStr::from_ptr(get_vcs_version) };
+        let vcs_version_str_slice = vcs_version_str.to_str().unwrap();
+        let vcs_version = vcs_version_str_slice.to_owned();
+
+        unsafe { ffi::projectm_free_string(get_vcs_version) };
+
+        return vcs_version;
+    }
+
+    // -----------------
+    // Callbacks
+    // -----------------
 
     pub fn set_preset_switch_requested_event_callback<F: FnMut(bool)>(
         instance: projectm_handle,
@@ -116,15 +170,35 @@ impl projectm {
         }
     }
 
-    pub fn get_preset_locked(instance: projectm_handle) -> bool {
-        return unsafe { ffi::projectm_get_preset_locked(instance) };
-    }
-
-    pub fn set_preset_locked(instance: projectm_handle, lock: bool) {
-        unsafe { ffi::projectm_set_preset_locked(instance, lock) };
-    }
-
     // -----------------
+    // Parameters
+    // -----------------
+
+    pub fn set_texture_search_paths(
+        instance: projectm_handle,
+        texture_search_paths: Vec<String>,
+        count: usize,
+    ) {
+        let texture_search_paths_cstr: Vec<_> = texture_search_paths
+            .iter()
+            .map(|arg| CString::new(arg.as_str()).unwrap())
+            .collect();
+
+        let mut texture_search_paths_pointer: Vec<_> = texture_search_paths_cstr
+            .iter() // do NOT into_iter()
+            .map(|arg| arg.as_ptr())
+            .collect();
+
+        texture_search_paths_pointer.push(std::ptr::null());
+
+        unsafe {
+            ffi::projectm_set_texture_search_paths(
+                instance,
+                texture_search_paths_pointer.as_ptr() as *mut *const ::std::os::raw::c_char,
+                count,
+            )
+        };
+    }
 
     pub fn get_beat_sensitivity(instance: projectm_handle) -> f32 {
         return unsafe { ffi::projectm_get_beat_sensitivity(instance) };
@@ -225,6 +299,14 @@ impl projectm {
         unsafe { ffi::projectm_set_easter_egg(instance, sensitivity) };
     }
 
+    pub fn get_preset_locked(instance: projectm_handle) -> bool {
+        return unsafe { ffi::projectm_get_preset_locked(instance) };
+    }
+
+    pub fn set_preset_locked(instance: projectm_handle, lock: bool) {
+        unsafe { ffi::projectm_set_preset_locked(instance, lock) };
+    }
+
     pub fn get_window_size(instance: projectm_handle) -> (usize, usize) {
         #[derive(Debug, Default, Copy, Clone)]
         #[repr(C, packed)]
@@ -251,45 +333,19 @@ impl projectm {
     }
 
     // -----------------
-
-    pub fn set_texture_search_paths(
-        instance: projectm_handle,
-        texture_search_paths: Vec<String>,
-        count: usize,
-    ) {
-        let texture_search_paths_cstr: Vec<_> = texture_search_paths
-            .iter()
-            .map(|arg| CString::new(arg.as_str()).unwrap())
-            .collect();
-
-        let mut texture_search_paths_pointer: Vec<_> = texture_search_paths_cstr
-            .iter() // do NOT into_iter()
-            .map(|arg| arg.as_ptr())
-            .collect();
-
-        texture_search_paths_pointer.push(std::ptr::null());
-
-        unsafe {
-            ffi::projectm_set_texture_search_paths(
-                instance,
-                texture_search_paths_pointer.as_ptr() as *mut *const ::std::os::raw::c_char,
-                count,
-            )
-        };
-    }
-
-    pub fn reset_textures(instance: projectm_handle) {
-        unsafe { ffi::projectm_reset_textures(instance) };
-    }
+    // Render OpenGL
+    // -----------------
 
     pub fn render_frame(instance: projectm_handle) {
-        unsafe { ffi::projectm_render_frame(instance) };
+        unsafe { ffi::projectm_opengl_render_frame(instance) };
     }
 
     pub fn init_render_to_texture(instance: projectm_handle) -> u32 {
-        return unsafe { ffi::projectm_init_render_to_texture(instance) };
+        return unsafe { ffi::projectm_opengl_init_render_to_texture(instance) };
     }
 
+    // -----------------
+    // Touch
     // -----------------
 
     pub fn touch(
@@ -314,6 +370,8 @@ impl projectm {
         unsafe { ffi::projectm_touch_destroy_all(instance) };
     }
 
+    // -----------------
+    // Audio
     // -----------------
 
     pub fn pcm_get_max_samples() -> u32 {
@@ -348,8 +406,11 @@ impl projectm {
     }
 
     // -----------------
+    // Debug
+    // -----------------
 
-    pub fn write_debug_image_on_next_frame(instance: projectm_handle) {
-        unsafe { ffi::projectm_write_debug_image_on_next_frame(instance) };
+    // Figure out how to make an argument optional
+    pub fn write_debug_image_on_next_frame(instance: projectm_handle, output_file: Option<&String>) {
+        unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, output_file.unwrap().as_ptr() as *mut i8) };
     }
 }
