@@ -301,9 +301,12 @@ fn test_get_and_set_window_size(projectm_handle: projectm_handle) {
 }
 
 fn test_write_debug_image_on_next_frame(projectm_handle: projectm_handle) {
-    println!("Test -> write_debug_image_on_next_frame");
+    println!("Test -> write_debug_image_on_next_frame_with_filename");
     let save_filename = String::from("test_debug_image.bmp");
     projectm::write_debug_image_on_next_frame(projectm_handle, Some(&save_filename));
+
+    // println!("Test -> write_debug_image_on_next_frame_without_filename");
+    // projectm::write_debug_image_on_next_frame(projectm_handle, None);
 }
 
 fn test_init_render_to_texture(projectm_handle: projectm_handle) {

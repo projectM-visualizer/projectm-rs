@@ -411,6 +411,14 @@ impl projectm {
 
     // Figure out how to make an argument optional
     pub fn write_debug_image_on_next_frame(instance: projectm_handle, output_file: Option<&String>) {
-        unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, output_file.unwrap().as_ptr() as *mut i8) };
+        let output;
+
+        if output_file.is_none() {
+            output = std::ptr::null();
+        } else {
+            output = output_file.unwrap().as_ptr() as *mut i8;
+        }
+
+        unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, output) };
     }
 }
