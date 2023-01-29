@@ -4,6 +4,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use projectm_rs::core::*;
 
+#[cfg(example)]
 fn main() -> Result<(), String> {
     // setup sdl
     let sdl_context = sdl2::init()?;

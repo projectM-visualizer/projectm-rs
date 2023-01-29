@@ -19,7 +19,7 @@
 extern crate libc;
 extern crate projectm_sys as ffi;
 
-use std::ffi::{CString};
+use std::ffi::CString;
 
 pub enum projectm {}
 pub type projectm_handle = *mut ffi::projectm;
