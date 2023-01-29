@@ -4,8 +4,8 @@
 extern crate libc;
 extern crate projectm_sys as ffi;
 
-use std::ffi::CString;
 use ffi::projectm_handle;
+use std::ffi::CString;
 
 // pub enum projectm_playlist {}
 
@@ -19,7 +19,7 @@ impl Playlist {
     pub fn create(projectm: projectm_handle) -> Playlist {
         unsafe {
             let playlist = ffi::projectm_playlist_create(projectm);
-            Playlist { playlist  }
+            Playlist { playlist }
         }
     }
 
@@ -31,12 +31,31 @@ impl Playlist {
     }
 
     /// Scan and add a directory of presets to the playlist.
-    pub fn add_path(&mut self, path: &str, recursive: bool ) {
+    pub fn add_path(&mut self, path: &str, recursive: bool) {
         unsafe {
             let c_path = CString::new(path).unwrap();
-            ffi::projectm_playlist_add_path(self.playlist, c_path.as_ptr(), recursive , false);
+            ffi::projectm_playlist_add_path(self.playlist, c_path.as_ptr(), recursive, false);
         }
     }
 
+    /// Go to the next preset in the playlist (hard cut).
+    pub fn play_next(&mut self) {
+        unsafe {
+            ffi::projectm_playlist_play_next(self.playlist, true);
+        }
+    }
 
+    /// Go to the previous preset in the playlist (hard cut).
+    pub fn play_prev(&mut self) {
+        unsafe {
+            ffi::projectm_playlist_play_previous(self.playlist, true);
+        }
+    }
+
+    /// Go to a random preset in the playlist (hard cut).
+    pub fn play_random(&mut self) {
+        unsafe {
+            unimplemented!();
+        }
+    }
 }
