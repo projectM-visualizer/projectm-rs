@@ -14,6 +14,7 @@ readme = "README.md"
 [dependencies]
 libc = "0.2.139"
 projectm-sys = { version = "1.0.5", features = ["playlist"] }
+rand = "0.8.5"
 
 # *needed for test_sdl*
 # sdl2 = "0.35.2"
