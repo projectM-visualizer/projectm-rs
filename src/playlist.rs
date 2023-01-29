@@ -1,0 +1,67 @@
+// idk ?
+#![allow(non_camel_case_types)]
+
+extern crate libc;
+extern crate projectm_sys as ffi;
+
+use ffi::projectm_handle;
+use rand::Rng;
+use std::ffi::CString;
+
+pub struct Playlist {
+    playlist: *mut ffi::projectm_playlist,
+    rng: rand::rngs::ThreadRng,
+}
+
+impl Playlist {
+    /// Create a new playlist for [projectm](projectm_handle)
+    pub fn create(projectm: projectm_handle) -> Playlist {
+        let playlist;
+        unsafe {
+            playlist = ffi::projectm_playlist_create(projectm);
+        }
+        Playlist {
+            playlist,
+            rng: rand::thread_rng(),
+        }
+    }
+
+    pub fn len(&self) -> u32 {
+        unsafe {
+            let len = ffi::projectm_playlist_size(self.playlist);
+            len
+        }
+    }
+
+    /// Scan and add a directory of presets to the playlist.
+    pub fn add_path(&self, path: &str, recursive: bool) {
+        unsafe {
+            let c_path = CString::new(path).unwrap();
+            ffi::projectm_playlist_add_path(self.playlist, c_path.as_ptr(), recursive, false);
+        }
+    }
+
+    /// Go to the next preset in the playlist (hard cut).
+    pub fn play_next(&mut self) {
+        unsafe {
+            ffi::projectm_playlist_play_next(self.playlist, true);
+        }
+    }
+
+    /// Go to the previous preset in the playlist (hard cut).
+    pub fn play_prev(&mut self) {
+        unsafe {
+            // FIXME THIS IS WRONG
+            ffi::projectm_playlist_play_previous(self.playlist, true);
+        }
+    }
+
+    /// Go to a random preset in the playlist (hard cut).
+    pub fn play_random(&mut self) {
+        let len = self.len();
+        let index: u32 = self.rng.gen_range(0..len).try_into().unwrap();
+        unsafe {
+            ffi::projectm_playlist_set_position(self.playlist, index, true);
+        }
+    }
+}

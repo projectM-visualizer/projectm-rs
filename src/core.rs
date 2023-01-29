@@ -19,7 +19,7 @@
 extern crate libc;
 extern crate projectm_sys as ffi;
 
-use std::ffi::{CString};
+use std::ffi::CString;
 
 pub enum projectm {}
 pub type projectm_handle = *mut ffi::projectm;
@@ -64,11 +64,7 @@ impl projectm {
 
     pub fn load_preset_data(instance: projectm_handle, data: &String, smooth_transition: bool) {
         unsafe {
-            ffi::projectm_load_preset_data(
-                instance,
-                data.as_ptr() as *mut i8,
-                smooth_transition,
-            )
+            ffi::projectm_load_preset_data(instance, data.as_ptr() as *mut i8, smooth_transition)
         };
     }
 
@@ -275,10 +271,11 @@ impl projectm {
         }
     }
 
-    pub fn get_fps(instance: projectm_handle) -> usize {
-        return unsafe { ffi::projectm_get_fps(instance) } as usize;
+    pub fn get_fps(instance: projectm_handle) -> u32 {
+        return unsafe { ffi::projectm_get_fps(instance).try_into().unwrap() };
     }
 
+    // FIXME: shouldn't it also be a usize?
     pub fn set_fps(instance: projectm_handle, fps: u32) {
         unsafe { ffi::projectm_set_fps(instance, fps as i32) };
     }
@@ -376,11 +373,12 @@ impl projectm {
 
     pub fn pcm_add_float(
         instance: projectm_handle,
-        samples: *const f32,
-        count: u32,
+        samples: Vec<f32>,
         channels: projectm_channels,
     ) {
-        unsafe { ffi::projectm_pcm_add_float(instance, samples, count, channels) }
+        unsafe {
+            ffi::projectm_pcm_add_float(instance, samples.as_ptr(), samples.len() as u32, channels)
+        }
     }
 
     pub fn pcm_add_int16(
@@ -406,7 +404,10 @@ impl projectm {
     // -----------------
 
     // Figure out how to make an argument optional
-    pub fn write_debug_image_on_next_frame(instance: projectm_handle, output_file: Option<&String>) {
+    pub fn write_debug_image_on_next_frame(
+        instance: projectm_handle,
+        output_file: Option<&String>,
+    ) {
         let output;
 
         if output_file.is_none() {
