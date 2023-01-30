@@ -14,14 +14,12 @@
 //! ```
 //!
 
-#![allow(non_camel_case_types)]
-
 extern crate libc;
 extern crate projectm_sys as ffi;
 
 use std::ffi::CString;
 
-pub enum projectm {}
+pub enum Projectm {}
 pub type ProjectMHandle = *mut ffi::projectm;
 
 pub type ProjectMChannels = u32;
@@ -39,7 +37,7 @@ pub const TOUCH_TYPE_BLOB5: ProjectMTouchType = 6;
 pub const TOUCH_TYPE_LINE: ProjectMTouchType = 7;
 pub const TOUCH_TYPE_DOUBLE_LINE: ProjectMTouchType = 8;
 
-impl projectm {
+impl Projectm {
     // -----------------
     // Core
     // -----------------

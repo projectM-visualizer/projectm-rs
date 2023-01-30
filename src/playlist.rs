@@ -1,7 +1,6 @@
 extern crate libc;
 extern crate projectm_sys as ffi;
 
-use ffi::projectm_handle;
 use rand::Rng;
 use std::ffi::CString;
 
@@ -10,9 +9,11 @@ pub struct Playlist {
     rng: rand::rngs::ThreadRng,
 }
 
+pub type ProjectMHandle = *mut ffi::projectm;
+
 impl Playlist {
-    /// Create a new playlist for [projectm](projectm_handle)
-    pub fn create(projectm: projectm_handle) -> Playlist {
+    /// Create a new playlist for [Projectm](ProjectMHandle)
+    pub fn create(projectm: ProjectMHandle) -> Playlist {
         let playlist;
         unsafe {
             playlist = ffi::projectm_playlist_create(projectm);
