@@ -375,29 +375,22 @@ impl Projectm {
         }
     }
 
-    pub fn pcm_add_int16(
-        instance: ProjectMHandle,
-        samples: *const i16,
-        count: u32,
-        channels: ProjectMChannels,
-    ) {
-        unsafe { ffi::projectm_pcm_add_int16(instance, samples, count, channels) }
+    pub fn pcm_add_int16(instance: ProjectMHandle, samples: Vec<i16>, channels: ProjectMChannels) {
+        unsafe {
+            ffi::projectm_pcm_add_int16(instance, samples.as_ptr(), samples.len() as u32, channels)
+        }
     }
 
-    pub fn pcm_add_uint8(
-        instance: ProjectMHandle,
-        samples: *const u8,
-        count: u32,
-        channels: ProjectMChannels,
-    ) {
-        unsafe { ffi::projectm_pcm_add_uint8(instance, samples, count, channels) }
+    pub fn pcm_add_uint8(instance: ProjectMHandle, samples: Vec<u8>, channels: ProjectMChannels) {
+        unsafe {
+            ffi::projectm_pcm_add_uint8(instance, samples.as_ptr(), samples.len() as u32, channels)
+        }
     }
 
     // -----------------
     // Debug
     // -----------------
 
-    // Figure out how to make an argument optional
     pub fn write_debug_image_on_next_frame(instance: ProjectMHandle, output_file: Option<&String>) {
         let output = if let Some(..) = output_file {
             std::ptr::null()
