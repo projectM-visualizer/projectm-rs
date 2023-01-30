@@ -27,10 +27,11 @@ impl Playlist {
     }
 
     pub fn len(&self) -> u32 {
-        unsafe {
-            let len = ffi::projectm_playlist_size(self.playlist);
-            len
-        }
+        unsafe { ffi::projectm_playlist_size(self.playlist) }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     /// Scan and add a directory of presets to the playlist.
@@ -59,7 +60,7 @@ impl Playlist {
     /// Go to a random preset in the playlist (hard cut).
     pub fn play_random(&mut self) {
         let len = self.len();
-        let index: u32 = self.rng.gen_range(0..len).try_into().unwrap();
+        let index: u32 = self.rng.gen_range(0..len);
         unsafe {
             ffi::projectm_playlist_set_position(self.playlist, index, true);
         }

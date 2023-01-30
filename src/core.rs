@@ -45,14 +45,14 @@ impl projectm {
     // -----------------
 
     pub fn create() -> *mut ffi::projectm {
-        return unsafe { ffi::projectm_create() };
+        unsafe { ffi::projectm_create() }
     }
 
     pub fn destroy(instance: projectm_handle) {
         unsafe { ffi::projectm_destroy(instance) };
     }
 
-    pub fn load_preset_file(instance: projectm_handle, filename: &String, smooth_transition: bool) {
+    pub fn load_preset_file(instance: projectm_handle, filename: &str, smooth_transition: bool) {
         unsafe {
             ffi::projectm_load_preset_file(
                 instance,
@@ -62,7 +62,7 @@ impl projectm {
         };
     }
 
-    pub fn load_preset_data(instance: projectm_handle, data: &String, smooth_transition: bool) {
+    pub fn load_preset_data(instance: projectm_handle, data: &str, smooth_transition: bool) {
         unsafe {
             ffi::projectm_load_preset_data(instance, data.as_ptr() as *mut i8, smooth_transition)
         };
@@ -91,7 +91,7 @@ impl projectm {
             );
         }
 
-        return (version.major, version.minor, version.patch);
+        (version.major, version.minor, version.patch)
     }
 
     pub fn get_version_string() -> String {
@@ -102,7 +102,7 @@ impl projectm {
 
         unsafe { ffi::projectm_free_string(get_version) };
 
-        return version;
+        version
     }
 
     pub fn get_vcs_version_string() -> String {
@@ -113,7 +113,7 @@ impl projectm {
 
         unsafe { ffi::projectm_free_string(get_vcs_version) };
 
-        return vcs_version;
+        vcs_version
     }
 
     // -----------------
@@ -197,7 +197,7 @@ impl projectm {
     }
 
     pub fn get_beat_sensitivity(instance: projectm_handle) -> f32 {
-        return unsafe { ffi::projectm_get_beat_sensitivity(instance) };
+        unsafe { ffi::projectm_get_beat_sensitivity(instance) }
     }
 
     pub fn set_beat_sensitivity(instance: projectm_handle, sensitivity: f32) {
@@ -205,7 +205,7 @@ impl projectm {
     }
 
     pub fn get_hard_cut_duration(instance: projectm_handle) -> f64 {
-        return unsafe { ffi::projectm_get_hard_cut_duration(instance) };
+        unsafe { ffi::projectm_get_hard_cut_duration(instance) }
     }
 
     pub fn set_hard_cut_duration(instance: projectm_handle, seconds: f64) {
@@ -213,7 +213,7 @@ impl projectm {
     }
 
     pub fn get_hard_cut_enabled(instance: projectm_handle) -> bool {
-        return unsafe { ffi::projectm_get_hard_cut_enabled(instance) };
+        unsafe { ffi::projectm_get_hard_cut_enabled(instance) }
     }
 
     pub fn set_hard_cut_enabled(instance: projectm_handle, enabled: bool) {
@@ -221,7 +221,7 @@ impl projectm {
     }
 
     pub fn get_hard_cut_sensitivity(instance: projectm_handle) -> f32 {
-        return unsafe { ffi::projectm_get_hard_cut_sensitivity(instance) };
+        unsafe { ffi::projectm_get_hard_cut_sensitivity(instance) }
     }
 
     pub fn set_hard_cut_sensitivity(instance: projectm_handle, sensitivity: f32) {
@@ -229,7 +229,7 @@ impl projectm {
     }
 
     pub fn get_soft_cut_duration(instance: projectm_handle) -> f64 {
-        return unsafe { ffi::projectm_get_soft_cut_duration(instance) };
+        unsafe { ffi::projectm_get_soft_cut_duration(instance) }
     }
 
     pub fn set_soft_cut_duration(instance: projectm_handle, seconds: f64) {
@@ -262,7 +262,7 @@ impl projectm {
             );
         }
 
-        return (mesh.mesh_x, mesh.mesh_y);
+        (mesh.mesh_x, mesh.mesh_y)
     }
 
     pub fn set_mesh_size(instance: projectm_handle, mesh_x: usize, mesh_y: usize) {
@@ -272,7 +272,7 @@ impl projectm {
     }
 
     pub fn get_fps(instance: projectm_handle) -> u32 {
-        return unsafe { ffi::projectm_get_fps(instance).try_into().unwrap() };
+        unsafe { ffi::projectm_get_fps(instance).try_into().unwrap() }
     }
 
     // FIXME: shouldn't it also be a usize?
@@ -281,7 +281,7 @@ impl projectm {
     }
 
     pub fn get_aspect_correction(instance: projectm_handle) -> bool {
-        return unsafe { ffi::projectm_get_aspect_correction(instance) };
+        unsafe { ffi::projectm_get_aspect_correction(instance) }
     }
 
     pub fn set_aspect_correction(instance: projectm_handle, enabled: bool) {
@@ -289,7 +289,7 @@ impl projectm {
     }
 
     pub fn get_easter_egg(instance: projectm_handle) -> f32 {
-        return unsafe { ffi::projectm_get_easter_egg(instance) };
+        unsafe { ffi::projectm_get_easter_egg(instance) }
     }
 
     pub fn set_easter_egg(instance: projectm_handle, sensitivity: f32) {
@@ -297,7 +297,7 @@ impl projectm {
     }
 
     pub fn get_preset_locked(instance: projectm_handle) -> bool {
-        return unsafe { ffi::projectm_get_preset_locked(instance) };
+        unsafe { ffi::projectm_get_preset_locked(instance) }
     }
 
     pub fn set_preset_locked(instance: projectm_handle, lock: bool) {
@@ -322,7 +322,7 @@ impl projectm {
             );
         }
 
-        return (window.width, window.height);
+        (window.width, window.height)
     }
 
     pub fn set_window_size(instance: projectm_handle, width: usize, height: usize) {
@@ -368,7 +368,7 @@ impl projectm {
     // -----------------
 
     pub fn pcm_get_max_samples() -> u32 {
-        return unsafe { ffi::projectm_pcm_get_max_samples() };
+        unsafe { ffi::projectm_pcm_get_max_samples() }
     }
 
     pub fn pcm_add_float(
@@ -408,13 +408,11 @@ impl projectm {
         instance: projectm_handle,
         output_file: Option<&String>,
     ) {
-        let output;
-
-        if output_file.is_none() {
-            output = std::ptr::null();
+        let output = if let Some(..) = output_file {
+            std::ptr::null()
         } else {
-            output = output_file.unwrap().as_ptr() as *mut i8;
-        }
+            output_file.unwrap().as_ptr() as *mut i8
+        };
 
         unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, output) };
     }
