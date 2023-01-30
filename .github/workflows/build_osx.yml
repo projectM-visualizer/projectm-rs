@@ -1,0 +1,47 @@
+name: macOS (x86_64)
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - "*"
+
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    name: Build & Test Rust Crate
+    runs-on: macos-latest
+
+    env:
+      RUST_BACKTRACE: full
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update Local Toolchain
+        run: |
+          rustup update
+          rustup component add clippy
+
+      - name: Toolchain Info
+        run: |
+          cargo --version --verbose
+          rustc --version
+          cargo clippy --version
+
+      - name: Lint
+        run: |
+          cargo fmt -- --check
+          # cargo clippy -- -D warnings
+
+      - name: Run Tests
+        run: |
+          cargo check
+          # cargo test --all
+
+      - name: Build Debug
+        run: cargo build
