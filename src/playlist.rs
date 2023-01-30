@@ -1,6 +1,3 @@
-// idk ?
-#![allow(non_camel_case_types)]
-
 extern crate libc;
 extern crate projectm_sys as ffi;
 

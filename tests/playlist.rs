@@ -1,13 +1,13 @@
-// use projectm_rs::core::projectm;
-// use projectm_rs::playlist::Playlist;
-
 #[cfg(test)]
-mod tests {
+mod playlist {
+    use projectm_rs::core::projectm;
+    use projectm_rs::playlist::Playlist;
+
     #[test]
     fn playlist() {
-        let projectm = projectm_rs::core::projectm::create();
-        let playlist = projectm_rs::playlist::Playlist::create(projectm);
-        assert_eq!(playlist.len(), 0);
+        let projectm = projectm::create();
+        let playlist = Playlist::create(projectm);
+        assert_eq!(playlist.is_empty(), true);
 
         // add ../presets to playlist
         // get absolute path to ../presets
