@@ -16,19 +16,6 @@ libc = "0.2.139"
 projectm-sys = { version = "1.0.5", features = ["playlist"] }
 rand = "0.8.5"
 
-# *needed for test_sdl*
-# sdl2 = "0.35.2"
-
-[[example]]
-name = "sdl"
-
 [features]
 default = ["playlist"]
 playlist = []
-example = ["sdl2"]
-
-[dependencies.sdl2]
-version = "0.35.2"
-optional = true
-
-
