@@ -7,11 +7,9 @@
 //!
 //! # Example
 //!
-//! ```
-//! use projectm_rs::core::*;
-//!
-//! let ProjectMHandle = projectm::create();
-//! ```
+// ! use projectm_rs::core::*;
+// !
+// ! let ProjectMHandle = Projectm::create();
 //!
 
 extern crate libc;
@@ -170,7 +168,7 @@ impl Projectm {
 
     pub fn set_texture_search_paths(
         instance: ProjectMHandle,
-        texture_search_paths: Vec<String>,
+        texture_search_paths: &[String],
         count: usize,
     ) {
         let texture_search_paths_cstr: Vec<_> = texture_search_paths
@@ -346,7 +344,7 @@ impl Projectm {
         pressure: i32,
         touch_type: ProjectMTouchType,
     ) {
-        unsafe { ffi::projectm_touch(instance, x, y, pressure, touch_type) };
+        unsafe { ffi::projectm_touch(instance, x, y, pressure, touch_type.try_into().unwrap()) };
     }
 
     pub fn touch_drag(instance: ProjectMHandle, x: f32, y: f32, pressure: i32) {
@@ -371,19 +369,34 @@ impl Projectm {
 
     pub fn pcm_add_float(instance: ProjectMHandle, samples: Vec<f32>, channels: ProjectMChannels) {
         unsafe {
-            ffi::projectm_pcm_add_float(instance, samples.as_ptr(), samples.len() as u32, channels)
+            ffi::projectm_pcm_add_float(
+                instance,
+                samples.as_ptr(),
+                samples.len() as u32,
+                channels.try_into().unwrap(),
+            )
         }
     }
 
     pub fn pcm_add_int16(instance: ProjectMHandle, samples: Vec<i16>, channels: ProjectMChannels) {
         unsafe {
-            ffi::projectm_pcm_add_int16(instance, samples.as_ptr(), samples.len() as u32, channels)
+            ffi::projectm_pcm_add_int16(
+                instance,
+                samples.as_ptr(),
+                samples.len() as u32,
+                channels.try_into().unwrap(),
+            )
         }
     }
 
     pub fn pcm_add_uint8(instance: ProjectMHandle, samples: Vec<u8>, channels: ProjectMChannels) {
         unsafe {
-            ffi::projectm_pcm_add_uint8(instance, samples.as_ptr(), samples.len() as u32, channels)
+            ffi::projectm_pcm_add_uint8(
+                instance,
+                samples.as_ptr(),
+                samples.len() as u32,
+                channels.try_into().unwrap(),
+            )
         }
     }
 
