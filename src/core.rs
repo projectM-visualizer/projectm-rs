@@ -168,7 +168,7 @@ impl Projectm {
 
     pub fn set_texture_search_paths(
         instance: ProjectMHandle,
-        texture_search_paths: &[String],
+        texture_search_paths: &Vec<String>,
         count: usize,
     ) {
         let texture_search_paths_cstr: Vec<_> = texture_search_paths
