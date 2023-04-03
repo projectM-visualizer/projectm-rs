@@ -1,6 +1,6 @@
 [package]
 name = "projectm-rs"
-version = "1.0.4"
+version = "1.0.5"
 edition = "2021"
 rust-version = "1.65"
 authors = ["AnomieVision <anomievision@gmail.com.com>"]
@@ -12,8 +12,8 @@ categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
 
 [dependencies]
-libc = "0.2.139"
-projectm-sys = { version = "1.0.6", features = ["playlist"] }
+libc = "0.2.140"
+projectm-sys = { version = "1.0.7", features = ["playlist"] }
 rand = "0.8.5"
 
 [features]
