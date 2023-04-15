@@ -68,12 +68,6 @@ development files. To build projectM, both binaries and development files need t
 * **OpenGL**: 3D graphics library. Used to render the visualizations.
 * or **GLES3**: OpenGL libraries for embedded systems, version 3. Required to build projectM on Android devices,
   Raspberry Pi, Emscripten and the Universal Windows Platform.
-* [**glm**](https://github.com/g-truc/glm):  OpenGL Mathematics library. Optional, will use a bundled version with
-  autotools or if not installed.
-* [**SDL2**](https://github.com/libsdl-org/SDL): Simple Directmedia Layer. Version 2.0.5 or higher is required to build
-  the test UI.
-* [**LLVM**](https://llvm.org/): Low-Level Virtual Machine. Optional and **experimental**, used to speed up preset
-  execution by leveraging the LLVM JIT compiler.
 
 #### Only relevant for Windows:
 
