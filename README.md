@@ -12,7 +12,7 @@
 
 <br />
 
-<h3 align="center">projectM-rs</h3>
+<h3 align="center">projectM</h3>
 
   <p align="center">
     Safe-wrapper bindings for <a href="https://github.com/projectM-visualizer/projectm" target="_blank">ProjectM</a>
@@ -85,18 +85,17 @@ development files. To build projectM, both binaries and development files need t
 # Cargo.toml
 
 [dependencies]
-projectm-rs = { version = "1.0", features = [] }   # Available features: playlist
+projectm = { version = "1.0", features = [] }   # Available features: playlist
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- EXAMPLES -->
 ## Example
-You can easily try it out yourself, by running the command below.
 
-```
-cargo run --example sdl
-```
+Check out the frontend-sdl repo for an example on how to utilize the projectM library.
+<br>
+* [**frontend-sdl-rust**](https://github.com/projectM-visualizer/frontend-sdl-rust)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
