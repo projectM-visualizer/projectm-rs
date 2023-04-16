@@ -63,4 +63,16 @@ impl Playlist {
             ffi::projectm_playlist_set_position(self.playlist, index, true);
         }
     }
+
+    /// Set shuffle mode.
+    pub fn set_shuffle(&self, shuffle: bool) {
+        unsafe {
+            ffi::projectm_playlist_set_shuffle(self.playlist, shuffle);
+        }
+    }
+
+    /// Get shuffle mode.
+    pub fn get_shuffle(&self) -> bool {
+        unsafe { ffi::projectm_playlist_get_shuffle(self.playlist) }
+    }
 }
