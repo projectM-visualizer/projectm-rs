@@ -368,33 +368,48 @@ impl Projectm {
     }
 
     pub fn pcm_add_float(instance: ProjectMHandle, samples: Vec<f32>, channels: ProjectMChannels) {
+        assert!(
+            samples.len() <= Self::pcm_get_max_samples() as usize,
+            "Number of samples is greater than max samples"
+        );
+        let samples_per_channel = samples.len() / channels as usize;
         unsafe {
             ffi::projectm_pcm_add_float(
                 instance,
                 samples.as_ptr(),
-                samples.len() as u32,
+                samples_per_channel as u32,
                 channels.try_into().unwrap(),
             )
         }
     }
 
     pub fn pcm_add_int16(instance: ProjectMHandle, samples: Vec<i16>, channels: ProjectMChannels) {
+        assert!(
+            samples.len() <= Self::pcm_get_max_samples() as usize,
+            "Number of samples is greater than max samples"
+        );
+        let samples_per_channel = samples.len() / channels as usize;
         unsafe {
             ffi::projectm_pcm_add_int16(
                 instance,
                 samples.as_ptr(),
-                samples.len() as u32,
+                samples_per_channel as u32,
                 channels.try_into().unwrap(),
             )
         }
     }
 
     pub fn pcm_add_uint8(instance: ProjectMHandle, samples: Vec<u8>, channels: ProjectMChannels) {
+        assert!(
+            samples.len() <= Self::pcm_get_max_samples() as usize,
+            "Number of samples is greater than max samples"
+        );
+        let samples_per_channel = samples.len() / channels as usize;
         unsafe {
             ffi::projectm_pcm_add_uint8(
                 instance,
                 samples.as_ptr(),
-                samples.len() as u32,
+                samples_per_channel as u32,
                 channels.try_into().unwrap(),
             )
         }
