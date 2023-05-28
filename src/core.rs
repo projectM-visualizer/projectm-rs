@@ -420,10 +420,10 @@ impl Projectm {
     // -----------------
 
     pub fn write_debug_image_on_next_frame(instance: ProjectMHandle, output_file: Option<&String>) {
-        let output = if let Some(..) = output_file {
-            std::ptr::null()
+        let output = if let Some(output) = output_file {
+            output.as_ptr() as *mut i8
         } else {
-            output_file.unwrap().as_ptr() as *mut i8
+            std::ptr::null()
         };
 
         unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, output) };
