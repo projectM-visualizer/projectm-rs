@@ -420,12 +420,20 @@ impl Projectm {
     // -----------------
 
     pub fn write_debug_image_on_next_frame(instance: ProjectMHandle, output_file: Option<&String>) {
-        let output = if let Some(..) = output_file {
-            std::ptr::null()
-        } else {
-            output_file.unwrap().as_ptr() as *mut i8
-        };
+        // Transform the Rust String into a C String - this is needed due to the
+        // fact that Rust Strings are not null terminated.
+        let path = output_file.map(|p| {
+            CString::new(p.as_str())
+                .expect("Provided output file path could not be converted to a C string")
+        });
 
-        unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, output) };
+        // `path` will be alive until the end of the scope, so we can safely get
+        // a pointer to it.
+        let ptr = path
+            .as_ref()
+            .map(|s| s.as_ptr() as *const i8)
+            .unwrap_or(std::ptr::null());
+
+        unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, ptr) };
     }
 }
