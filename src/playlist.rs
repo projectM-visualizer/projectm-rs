@@ -4,19 +4,22 @@ extern crate projectm_sys as ffi;
 use rand::Rng;
 use std::ffi::CString;
 
+use crate::core::ProjectM;
+
 pub struct Playlist {
     playlist: *mut ffi::projectm_playlist,
     rng: rand::rngs::ThreadRng,
 }
 
-pub type ProjectMHandle = *mut ffi::projectm;
-
 impl Playlist {
     /// Create a new playlist for [Projectm](ProjectMHandle)
-    pub fn create(projectm: ProjectMHandle) -> Playlist {
+    pub fn create(projectm: ProjectM) -> Playlist {
+        let projectm = projectm.get_instance();
+        let instance = projectm.lock().unwrap();
+        
         let playlist;
         unsafe {
-            playlist = ffi::projectm_playlist_create(projectm);
+            playlist = ffi::projectm_playlist_create(*instance);
         }
         Playlist {
             playlist,
@@ -76,3 +79,6 @@ impl Playlist {
         unsafe { ffi::projectm_playlist_get_shuffle(self.playlist) }
     }
 }
+
+unsafe impl Send for Playlist {}
+unsafe impl Sync for Playlist {}

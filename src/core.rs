@@ -735,6 +735,10 @@ impl ProjectM {
 
         drop(instance);
     }
+
+    pub fn get_instance(&self) -> Arc<Mutex<ProjectMHandle>> {
+        self.instance.clone()
+    }
 }
 
 unsafe impl Send for ProjectM {}

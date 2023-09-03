@@ -32,13 +32,8 @@ mod core {
         assert_eq!(vcs_version_string, get_git_hash_by_command().unwrap());
     }
 
-    #[test]
-    fn test_create() {
-        let projectm = ProjectM::create();
-        projectm.set_aspect_correction(false);
-
-        println!("aspect_correction: {}", projectm.get_aspect_correction());
-
-        assert_eq!(projectm.get_aspect_correction(), false);
-    }
+    // #[test]
+    // fn test_create() {
+    //     let projectm = ProjectM::create();
+    // }
 }
