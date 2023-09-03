@@ -15,11 +15,10 @@ impl Playlist {
     /// Create a new playlist for [Projectm](ProjectMHandle)
     pub fn create(projectm: ProjectM) -> Playlist {
         let projectm = projectm.get_instance();
-        let instance = projectm.lock().unwrap();
 
         let playlist;
         unsafe {
-            playlist = ffi::projectm_playlist_create(*instance);
+            playlist = ffi::projectm_playlist_create(projectm);
         }
         Playlist {
             playlist,
