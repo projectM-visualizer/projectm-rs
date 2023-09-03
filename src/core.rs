@@ -16,9 +16,7 @@ extern crate libc;
 extern crate projectm_sys as ffi;
 
 use std::ffi::CString;
-use std::sync::{Arc, Mutex};
 
-pub struct Projectm {}
 pub type ProjectMHandle = *mut ffi::projectm;
 
 pub type ProjectMChannels = u32;
@@ -36,20 +34,22 @@ pub const TOUCH_TYPE_BLOB5: ProjectMTouchType = 6;
 pub const TOUCH_TYPE_LINE: ProjectMTouchType = 7;
 pub const TOUCH_TYPE_DOUBLE_LINE: ProjectMTouchType = 8;
 
+struct Projectm {}
+
 impl Projectm {
     // -----------------
     // Core
     // -----------------
 
-    pub fn create() -> *mut ffi::projectm {
+    fn create() -> *mut ffi::projectm {
         unsafe { ffi::projectm_create() }
     }
 
-    pub fn destroy(instance: ProjectMHandle) {
+    fn destroy(instance: ProjectMHandle) {
         unsafe { ffi::projectm_destroy(instance) };
     }
 
-    pub fn load_preset_file(instance: ProjectMHandle, filename: &str, smooth_transition: bool) {
+    fn load_preset_file(instance: ProjectMHandle, filename: &str, smooth_transition: bool) {
         unsafe {
             ffi::projectm_load_preset_file(
                 instance,
@@ -59,17 +59,17 @@ impl Projectm {
         };
     }
 
-    pub fn load_preset_data(instance: ProjectMHandle, data: &str, smooth_transition: bool) {
+    fn load_preset_data(instance: ProjectMHandle, data: &str, smooth_transition: bool) {
         unsafe {
             ffi::projectm_load_preset_data(instance, data.as_ptr() as *mut i8, smooth_transition)
         };
     }
 
-    pub fn reset_textures(instance: ProjectMHandle) {
+    fn reset_textures(instance: ProjectMHandle) {
         unsafe { ffi::projectm_reset_textures(instance) };
     }
 
-    pub fn get_version_components() -> (i32, i32, i32) {
+    fn get_version_components() -> (i32, i32, i32) {
         #[derive(Debug, Default, Copy, Clone)]
         #[repr(C, packed)]
         struct Version {
@@ -91,7 +91,7 @@ impl Projectm {
         (version.major, version.minor, version.patch)
     }
 
-    pub fn get_version_string() -> String {
+    fn get_version_string() -> String {
         let get_version = unsafe { ffi::projectm_get_version_string() };
         let version_str = unsafe { std::ffi::CStr::from_ptr(get_version) };
         let version_str_slice = version_str.to_str().unwrap();
@@ -102,7 +102,7 @@ impl Projectm {
         version
     }
 
-    pub fn get_vcs_version_string() -> String {
+    fn get_vcs_version_string() -> String {
         let get_vcs_version = unsafe { ffi::projectm_get_vcs_version_string() };
         let vcs_version_str = unsafe { std::ffi::CStr::from_ptr(get_vcs_version) };
         let vcs_version_str_slice = vcs_version_str.to_str().unwrap();
@@ -117,7 +117,7 @@ impl Projectm {
     // Callbacks
     // -----------------
 
-    pub fn set_preset_switch_requested_event_callback<F: FnMut(bool)>(
+    fn set_preset_switch_requested_event_callback<F: FnMut(bool)>(
         instance: ProjectMHandle,
         callback: F,
     ) {
@@ -136,7 +136,7 @@ impl Projectm {
         }
     }
 
-    pub fn set_preset_switch_failed_event_callback<F: FnMut(String, String)>(
+    fn set_preset_switch_failed_event_callback<F: FnMut(String, String)>(
         instance: ProjectMHandle,
         callback: F,
     ) {
@@ -167,9 +167,9 @@ impl Projectm {
     // Parameters
     // -----------------
 
-    pub fn set_texture_search_paths(
+    fn set_texture_search_paths(
         instance: ProjectMHandle,
-        texture_search_paths: &Vec<String>,
+        texture_search_paths: &[String],
         count: usize,
     ) {
         let texture_search_paths_cstr: Vec<_> = texture_search_paths
@@ -193,55 +193,55 @@ impl Projectm {
         };
     }
 
-    pub fn get_beat_sensitivity(instance: ProjectMHandle) -> f32 {
+    fn get_beat_sensitivity(instance: ProjectMHandle) -> f32 {
         unsafe { ffi::projectm_get_beat_sensitivity(instance) }
     }
 
-    pub fn set_beat_sensitivity(instance: ProjectMHandle, sensitivity: f32) {
+    fn set_beat_sensitivity(instance: ProjectMHandle, sensitivity: f32) {
         unsafe { ffi::projectm_set_beat_sensitivity(instance, sensitivity) };
     }
 
-    pub fn get_hard_cut_duration(instance: ProjectMHandle) -> f64 {
+    fn get_hard_cut_duration(instance: ProjectMHandle) -> f64 {
         unsafe { ffi::projectm_get_hard_cut_duration(instance) }
     }
 
-    pub fn set_hard_cut_duration(instance: ProjectMHandle, seconds: f64) {
+    fn set_hard_cut_duration(instance: ProjectMHandle, seconds: f64) {
         unsafe { ffi::projectm_set_hard_cut_duration(instance, seconds) };
     }
 
-    pub fn get_hard_cut_enabled(instance: ProjectMHandle) -> bool {
+    fn get_hard_cut_enabled(instance: ProjectMHandle) -> bool {
         unsafe { ffi::projectm_get_hard_cut_enabled(instance) }
     }
 
-    pub fn set_hard_cut_enabled(instance: ProjectMHandle, enabled: bool) {
+    fn set_hard_cut_enabled(instance: ProjectMHandle, enabled: bool) {
         unsafe { ffi::projectm_set_hard_cut_enabled(instance, enabled) }
     }
 
-    pub fn get_hard_cut_sensitivity(instance: ProjectMHandle) -> f32 {
+    fn get_hard_cut_sensitivity(instance: ProjectMHandle) -> f32 {
         unsafe { ffi::projectm_get_hard_cut_sensitivity(instance) }
     }
 
-    pub fn set_hard_cut_sensitivity(instance: ProjectMHandle, sensitivity: f32) {
+    fn set_hard_cut_sensitivity(instance: ProjectMHandle, sensitivity: f32) {
         unsafe { ffi::projectm_set_hard_cut_sensitivity(instance, sensitivity) }
     }
 
-    pub fn get_soft_cut_duration(instance: ProjectMHandle) -> f64 {
+    fn get_soft_cut_duration(instance: ProjectMHandle) -> f64 {
         unsafe { ffi::projectm_get_soft_cut_duration(instance) }
     }
 
-    pub fn set_soft_cut_duration(instance: ProjectMHandle, seconds: f64) {
+    fn set_soft_cut_duration(instance: ProjectMHandle, seconds: f64) {
         unsafe { ffi::projectm_set_soft_cut_duration(instance, seconds) }
     }
 
-    pub fn get_preset_duration(instance: ProjectMHandle) -> f64 {
+    fn get_preset_duration(instance: ProjectMHandle) -> f64 {
         unsafe { ffi::projectm_get_preset_duration(instance) }
     }
 
-    pub fn set_preset_duration(instance: ProjectMHandle, seconds: f64) {
+    fn set_preset_duration(instance: ProjectMHandle, seconds: f64) {
         unsafe { ffi::projectm_set_preset_duration(instance, seconds) }
     }
 
-    pub fn get_mesh_size(instance: ProjectMHandle) -> (usize, usize) {
+    fn get_mesh_size(instance: ProjectMHandle) -> (usize, usize) {
         #[derive(Debug, Default, Copy, Clone)]
         #[repr(C, packed)]
         struct Mesh {
@@ -262,46 +262,46 @@ impl Projectm {
         (mesh.mesh_x, mesh.mesh_y)
     }
 
-    pub fn set_mesh_size(instance: ProjectMHandle, mesh_x: usize, mesh_y: usize) {
+    fn set_mesh_size(instance: ProjectMHandle, mesh_x: usize, mesh_y: usize) {
         unsafe {
             ffi::projectm_set_mesh_size(instance, mesh_x, mesh_y);
         }
     }
 
-    pub fn get_fps(instance: ProjectMHandle) -> u32 {
+    fn get_fps(instance: ProjectMHandle) -> u32 {
         unsafe { ffi::projectm_get_fps(instance).try_into().unwrap() }
     }
 
     // FIXME: shouldn't it also be a usize?
-    pub fn set_fps(instance: ProjectMHandle, fps: u32) {
+    fn set_fps(instance: ProjectMHandle, fps: u32) {
         unsafe { ffi::projectm_set_fps(instance, fps as i32) };
     }
 
-    pub fn get_aspect_correction(instance: ProjectMHandle) -> bool {
+    fn get_aspect_correction(instance: ProjectMHandle) -> bool {
         unsafe { ffi::projectm_get_aspect_correction(instance) }
     }
 
-    pub fn set_aspect_correction(instance: ProjectMHandle, enabled: bool) {
+    fn set_aspect_correction(instance: ProjectMHandle, enabled: bool) {
         unsafe { ffi::projectm_set_aspect_correction(instance, enabled) };
     }
 
-    pub fn get_easter_egg(instance: ProjectMHandle) -> f32 {
+    fn get_easter_egg(instance: ProjectMHandle) -> f32 {
         unsafe { ffi::projectm_get_easter_egg(instance) }
     }
 
-    pub fn set_easter_egg(instance: ProjectMHandle, sensitivity: f32) {
+    fn set_easter_egg(instance: ProjectMHandle, sensitivity: f32) {
         unsafe { ffi::projectm_set_easter_egg(instance, sensitivity) };
     }
 
-    pub fn get_preset_locked(instance: ProjectMHandle) -> bool {
+    fn get_preset_locked(instance: ProjectMHandle) -> bool {
         unsafe { ffi::projectm_get_preset_locked(instance) }
     }
 
-    pub fn set_preset_locked(instance: ProjectMHandle, lock: bool) {
+    fn set_preset_locked(instance: ProjectMHandle, lock: bool) {
         unsafe { ffi::projectm_set_preset_locked(instance, lock) };
     }
 
-    pub fn get_window_size(instance: ProjectMHandle) -> (usize, usize) {
+    fn get_window_size(instance: ProjectMHandle) -> (usize, usize) {
         #[derive(Debug, Default, Copy, Clone)]
         #[repr(C, packed)]
         struct Mesh {
@@ -322,7 +322,7 @@ impl Projectm {
         (window.width, window.height)
     }
 
-    pub fn set_window_size(instance: ProjectMHandle, width: usize, height: usize) {
+    fn set_window_size(instance: ProjectMHandle, width: usize, height: usize) {
         unsafe { ffi::projectm_set_window_size(instance, width, height) };
     }
 
@@ -330,7 +330,7 @@ impl Projectm {
     // Render OpenGL
     // -----------------
 
-    pub fn render_frame(instance: ProjectMHandle) {
+    fn render_frame(instance: ProjectMHandle) {
         unsafe { ffi::projectm_opengl_render_frame(instance) };
     }
 
@@ -338,7 +338,7 @@ impl Projectm {
     // Touch
     // -----------------
 
-    pub fn touch(
+    fn touch(
         instance: ProjectMHandle,
         x: f32,
         y: f32,
@@ -348,15 +348,15 @@ impl Projectm {
         unsafe { ffi::projectm_touch(instance, x, y, pressure, touch_type.try_into().unwrap()) };
     }
 
-    pub fn touch_drag(instance: ProjectMHandle, x: f32, y: f32, pressure: i32) {
+    fn touch_drag(instance: ProjectMHandle, x: f32, y: f32, pressure: i32) {
         unsafe { ffi::projectm_touch_drag(instance, x, y, pressure) };
     }
 
-    pub fn touch_destroy(instance: ProjectMHandle, x: f32, y: f32) {
+    fn touch_destroy(instance: ProjectMHandle, x: f32, y: f32) {
         unsafe { ffi::projectm_touch_destroy(instance, x, y) };
     }
 
-    pub fn touch_destroy_all(instance: ProjectMHandle) {
+    fn touch_destroy_all(instance: ProjectMHandle) {
         unsafe { ffi::projectm_touch_destroy_all(instance) };
     }
 
@@ -364,11 +364,11 @@ impl Projectm {
     // Audio
     // -----------------
 
-    pub fn pcm_get_max_samples() -> u32 {
+    fn pcm_get_max_samples() -> u32 {
         unsafe { ffi::projectm_pcm_get_max_samples() }
     }
 
-    pub fn pcm_add_float(instance: ProjectMHandle, samples: Vec<f32>, channels: ProjectMChannels) {
+    fn pcm_add_float(instance: ProjectMHandle, samples: Vec<f32>, channels: ProjectMChannels) {
         assert!(
             samples.len() <= Self::pcm_get_max_samples() as usize,
             "Number of samples is greater than max samples"
@@ -384,7 +384,7 @@ impl Projectm {
         }
     }
 
-    pub fn pcm_add_int16(instance: ProjectMHandle, samples: Vec<i16>, channels: ProjectMChannels) {
+    fn pcm_add_int16(instance: ProjectMHandle, samples: Vec<i16>, channels: ProjectMChannels) {
         assert!(
             samples.len() <= Self::pcm_get_max_samples() as usize,
             "Number of samples is greater than max samples"
@@ -400,7 +400,7 @@ impl Projectm {
         }
     }
 
-    pub fn pcm_add_uint8(instance: ProjectMHandle, samples: Vec<u8>, channels: ProjectMChannels) {
+    fn pcm_add_uint8(instance: ProjectMHandle, samples: Vec<u8>, channels: ProjectMChannels) {
         assert!(
             samples.len() <= Self::pcm_get_max_samples() as usize,
             "Number of samples is greater than max samples"
@@ -420,7 +420,7 @@ impl Projectm {
     // Debug
     // -----------------
 
-    pub fn write_debug_image_on_next_frame(instance: ProjectMHandle, output_file: Option<&String>) {
+    fn write_debug_image_on_next_frame(instance: ProjectMHandle, output_file: Option<&String>) {
         // Transform the Rust String into a C String - this is needed due to the
         // fact that Rust Strings are not null terminated.
         let path = output_file.map(|p| {
@@ -432,7 +432,7 @@ impl Projectm {
         // a pointer to it.
         let ptr = path
             .as_ref()
-            .map(|s| s.as_ptr() as *const i8)
+            .map(|s| s.as_ptr())
             .unwrap_or(std::ptr::null());
 
         unsafe { ffi::projectm_write_debug_image_on_next_frame(instance, ptr) };
@@ -492,7 +492,7 @@ impl ProjectM {
         Projectm::set_preset_switch_failed_event_callback(self.instance, callback);
     }
 
-    pub fn set_texture_search_paths(&self, texture_search_paths: &Vec<String>, count: usize) {
+    pub fn set_texture_search_paths(&self, texture_search_paths: &[String], count: usize) {
         Projectm::set_texture_search_paths(self.instance, texture_search_paths, count);
     }
 
