@@ -17,6 +17,7 @@ fn main() {
                 "-c",
                 "advice.detachedHead=false",
                 "clone",
+                "--recurse-submodules",
                 "--depth=1",
                 "--branch",
                 // "v4.0.0",
