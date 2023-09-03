@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod core {
+    use projectm::core::*;
     use std::process::Command;
     use std::str;
-    use projectm::core::*;
 
     fn get_git_hash_by_command() -> Option<String> {
         let output = Command::new("git")
@@ -10,7 +10,7 @@ mod core {
             .arg("HEAD")
             .output()
             .ok()?;
-        
+
         if output.status.success() {
             let git_hash = str::from_utf8(&output.stdout).ok()?.trim().to_string();
             println!("git_hash: {}", git_hash);

@@ -446,10 +446,8 @@ pub struct ProjectM {
 impl ProjectM {
     pub fn create() -> Self {
         let instance = Arc::new(Mutex::new(Projectm::create()));
-        
-        ProjectM {
-            instance
-        }
+
+        ProjectM { instance }
     }
 
     pub fn destroy(&self) {
@@ -670,13 +668,7 @@ impl ProjectM {
         drop(instance);
     }
 
-    pub fn touch(
-        &self,
-        x: f32,
-        y: f32,
-        pressure: i32,
-        touch_type: ProjectMTouchType,
-    ) {
+    pub fn touch(&self, x: f32, y: f32, pressure: i32, touch_type: ProjectMTouchType) {
         let instance = self.instance.lock().unwrap();
         Projectm::touch(*instance, x, y, pressure, touch_type);
 
