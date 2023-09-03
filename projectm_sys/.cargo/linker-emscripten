@@ -1,0 +1,18 @@
+emcc "-s" "USE_SDL=2" \
+    "-s" "DISABLE_EXCEPTION_CATCHING=true" \
+    # "-s" "NO_DISABLE_EXCEPTION_CATCHING" \
+    "-s" "ERROR_ON_UNDEFINED_SYMBOLS=0" \
+    "-s" "NO_EXIT_RUNTIME=1" \
+    "-s" "MIN_WEBGL_VERSION=2" \
+    "-s" "MAX_WEBGL_VERSION=2" \
+    "-s" "FULL_ES2=1" \
+    "-s" "ALLOW_MEMORY_GROWTH=1" \
+    "-s" "MODULARIZE=1" \
+    "-s" "EXPORT_NAME=avPluginProjectM" \
+    "-s" "EXPORT_ES6=1" \
+    "-s" "EXIT_RUNTIME=1" \
+    "-s" "FORCE_FILESYSTEM" \
+    $@
+
+
+

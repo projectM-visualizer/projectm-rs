@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod playlist {
-    use projectm_rs::core::Projectm;
-    use projectm_rs::playlist::Playlist;
+    use projectm::core::Projectm;
+    use projectm::playlist::Playlist;
 
     #[test]
     fn playlist() {
