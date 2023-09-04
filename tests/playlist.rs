@@ -1,11 +1,11 @@
 #[cfg(test)]
 mod playlist {
-    use projectm_rs::core::Projectm;
-    use projectm_rs::playlist::Playlist;
+    use projectm::core::ProjectM;
+    use projectm::playlist::Playlist;
 
     #[test]
     fn playlist() {
-        let projectm = Projectm::create();
+        let projectm = ProjectM::create();
         let playlist = Playlist::create(projectm);
         assert_eq!(playlist.is_empty(), true);
 
