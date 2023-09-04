@@ -20,10 +20,8 @@ fn main() {
                 "--recurse-submodules",
                 "--depth=1",
                 "--branch",
-                // "v4.0.0",
-                // "https://github.com/projectM-visualizer/projectm.git",
-                "av-v4.0.1",
-                "https://github.com/anomievision/projectm.git",
+                "v4.0.0",
+                "https://github.com/projectM-visualizer/projectm.git",
                 &PROJECTM_BUILD,
             ])
             .status();

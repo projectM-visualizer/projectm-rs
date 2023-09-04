@@ -16,6 +16,7 @@ extern crate libc;
 extern crate projectm_sys as ffi;
 
 use std::ffi::CString;
+use std::sync::{Arc, Mutex};
 
 pub type ProjectMHandle = *mut ffi::projectm;
 
@@ -440,30 +441,34 @@ impl Projectm {
 }
 
 pub struct ProjectM {
-    instance: ProjectMHandle,
+    instance: Arc<Mutex<ProjectMHandle>>,
 }
 
 impl ProjectM {
     pub fn create() -> Self {
-        let instance = Projectm::create();
+        let instance = Arc::new(Mutex::new(Projectm::create()));
 
         ProjectM { instance }
     }
 
     pub fn destroy(&self) {
-        let _ = &Projectm::destroy(self.instance);
+        let instance = self.instance.lock().unwrap();
+        let _ = &Projectm::destroy(*instance);
     }
 
     pub fn load_preset_file(&self, filename: &str, smooth_transition: bool) {
-        Projectm::load_preset_file(self.instance, filename, smooth_transition);
+        let instance = self.instance.lock().unwrap();
+        Projectm::load_preset_file(*instance, filename, smooth_transition);
     }
 
     pub fn load_preset_data(&self, data: &str, smooth_transition: bool) {
-        Projectm::load_preset_data(self.instance, data, smooth_transition);
+        let instance = self.instance.lock().unwrap();
+        Projectm::load_preset_data(*instance, data, smooth_transition);
     }
 
     pub fn reset_textures(&self) {
-        Projectm::reset_textures(self.instance);
+        let instance = self.instance.lock().unwrap();
+        Projectm::reset_textures(*instance);
     }
 
     pub fn get_version_components() -> (i32, i32, i32) {
@@ -482,134 +487,166 @@ impl ProjectM {
         &self,
         callback: F,
     ) {
-        Projectm::set_preset_switch_requested_event_callback(self.instance, callback);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_preset_switch_requested_event_callback(*instance, callback);
     }
 
     pub fn set_preset_switch_failed_event_callback<F: FnMut(String, String) + 'static>(
         &self,
         callback: F,
     ) {
-        Projectm::set_preset_switch_failed_event_callback(self.instance, callback);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_preset_switch_failed_event_callback(*instance, callback);
     }
 
     pub fn set_texture_search_paths(&self, texture_search_paths: &[String], count: usize) {
-        Projectm::set_texture_search_paths(self.instance, texture_search_paths, count);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_texture_search_paths(*instance, texture_search_paths, count);
     }
 
     pub fn get_beat_sensitivity(&self) -> f32 {
-        Projectm::get_beat_sensitivity(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_beat_sensitivity(*instance)
     }
 
     pub fn set_beat_sensitivity(&self, sensitivity: f32) {
-        Projectm::set_beat_sensitivity(self.instance, sensitivity);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_beat_sensitivity(*instance, sensitivity);
     }
 
     pub fn get_hard_cut_duration(&self) -> f64 {
-        Projectm::get_hard_cut_duration(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_hard_cut_duration(*instance)
     }
 
     pub fn set_hard_cut_duration(&self, seconds: f64) {
-        Projectm::set_hard_cut_duration(self.instance, seconds);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_hard_cut_duration(*instance, seconds);
     }
 
     pub fn get_hard_cut_enabled(&self) -> bool {
-        Projectm::get_hard_cut_enabled(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_hard_cut_enabled(*instance)
     }
 
     pub fn set_hard_cut_enabled(&self, enabled: bool) {
-        Projectm::set_hard_cut_enabled(self.instance, enabled);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_hard_cut_enabled(*instance, enabled);
     }
 
     pub fn get_hard_cut_sensitivity(&self) -> f32 {
-        Projectm::get_hard_cut_sensitivity(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_hard_cut_sensitivity(*instance)
     }
 
     pub fn set_hard_cut_sensitivity(&self, sensitivity: f32) {
-        Projectm::set_hard_cut_sensitivity(self.instance, sensitivity);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_hard_cut_sensitivity(*instance, sensitivity);
     }
 
     pub fn get_soft_cut_duration(&self) -> f64 {
-        Projectm::get_soft_cut_duration(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_soft_cut_duration(*instance)
     }
 
     pub fn set_soft_cut_duration(&self, seconds: f64) {
-        Projectm::set_soft_cut_duration(self.instance, seconds);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_soft_cut_duration(*instance, seconds);
     }
 
     pub fn get_preset_duration(&self) -> f64 {
-        Projectm::get_preset_duration(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_preset_duration(*instance)
     }
 
     pub fn set_preset_duration(&self, seconds: f64) {
-        Projectm::set_preset_duration(self.instance, seconds);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_preset_duration(*instance, seconds);
     }
 
     pub fn get_mesh_size(&self) -> (usize, usize) {
-        Projectm::get_mesh_size(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_mesh_size(*instance)
     }
 
     pub fn set_mesh_size(&self, mesh_x: usize, mesh_y: usize) {
-        Projectm::set_mesh_size(self.instance, mesh_x, mesh_y);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_mesh_size(*instance, mesh_x, mesh_y);
     }
 
     pub fn get_fps(&self) -> u32 {
-        Projectm::get_fps(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_fps(*instance)
     }
 
     pub fn set_fps(&self, fps: u32) {
-        Projectm::set_fps(self.instance, fps);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_fps(*instance, fps);
     }
 
     pub fn get_aspect_correction(&self) -> bool {
-        Projectm::get_aspect_correction(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_aspect_correction(*instance)
     }
 
     pub fn set_aspect_correction(&self, enabled: bool) {
-        Projectm::set_aspect_correction(self.instance, enabled);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_aspect_correction(*instance, enabled);
     }
 
     pub fn get_easter_egg(&self) -> f32 {
-        Projectm::get_easter_egg(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_easter_egg(*instance)
     }
 
     pub fn set_easter_egg(&self, sensitivity: f32) {
-        Projectm::set_easter_egg(self.instance, sensitivity);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_easter_egg(*instance, sensitivity);
     }
 
     pub fn get_preset_locked(&self) -> bool {
-        Projectm::get_preset_locked(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_preset_locked(*instance)
     }
 
     pub fn set_preset_locked(&self, lock: bool) {
-        Projectm::set_preset_locked(self.instance, lock);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_preset_locked(*instance, lock);
     }
 
     pub fn get_window_size(&self) -> (usize, usize) {
-        Projectm::get_window_size(self.instance)
+        let instance = self.instance.lock().unwrap();
+        Projectm::get_window_size(*instance)
     }
 
     pub fn set_window_size(&self, width: usize, height: usize) {
-        Projectm::set_window_size(self.instance, width, height);
+        let instance = self.instance.lock().unwrap();
+        Projectm::set_window_size(*instance, width, height);
     }
 
     pub fn render_frame(&self) {
-        Projectm::render_frame(self.instance);
+        let instance = self.instance.lock().unwrap();
+        Projectm::render_frame(*instance);
     }
 
     pub fn touch(&self, x: f32, y: f32, pressure: i32, touch_type: ProjectMTouchType) {
-        Projectm::touch(self.instance, x, y, pressure, touch_type);
+        let instance = self.instance.lock().unwrap();
+        Projectm::touch(*instance, x, y, pressure, touch_type);
     }
 
     pub fn touch_drag(&self, x: f32, y: f32, pressure: i32) {
-        Projectm::touch_drag(self.instance, x, y, pressure);
+        let instance = self.instance.lock().unwrap();
+        Projectm::touch_drag(*instance, x, y, pressure);
     }
 
     pub fn touch_destroy(&self, x: f32, y: f32) {
-        Projectm::touch_destroy(self.instance, x, y);
+        let instance = self.instance.lock().unwrap();
+        Projectm::touch_destroy(*instance, x, y);
     }
 
     pub fn touch_destroy_all(&self) {
-        Projectm::touch_destroy_all(self.instance);
+        let instance = self.instance.lock().unwrap();
+        Projectm::touch_destroy_all(*instance);
     }
 
     pub fn pcm_get_max_samples() -> u32 {
@@ -617,23 +654,27 @@ impl ProjectM {
     }
 
     pub fn pcm_add_float(&self, samples: Vec<f32>, channels: ProjectMChannels) {
-        Projectm::pcm_add_float(self.instance, samples, channels);
+        let instance = self.instance.lock().unwrap();
+        Projectm::pcm_add_float(*instance, samples, channels);
     }
 
     pub fn pcm_add_int16(&self, samples: Vec<i16>, channels: ProjectMChannels) {
-        Projectm::pcm_add_int16(self.instance, samples, channels);
+        let instance = self.instance.lock().unwrap();
+        Projectm::pcm_add_int16(*instance, samples, channels);
     }
 
     pub fn pcm_add_uint8(&self, samples: Vec<u8>, channels: ProjectMChannels) {
-        Projectm::pcm_add_uint8(self.instance, samples, channels);
+        let instance = self.instance.lock().unwrap();
+        Projectm::pcm_add_uint8(*instance, samples, channels);
     }
 
     pub fn write_debug_image_on_next_frame(&self, output_file: Option<&String>) {
-        Projectm::write_debug_image_on_next_frame(self.instance, output_file);
+        let instance = self.instance.lock().unwrap();
+        Projectm::write_debug_image_on_next_frame(*instance, output_file);
     }
 
-    pub fn get_instance(&self) -> ProjectMHandle {
-        self.instance
+    pub fn get_instance(&self) -> Arc<Mutex<ProjectMHandle>> {
+        self.instance.clone()
     }
 }
 
