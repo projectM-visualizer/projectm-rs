@@ -17,7 +17,7 @@ extern crate projectm_sys as ffi;
 
 use std::cell::RefCell;
 use std::ffi::CString;
-use std::sync::Arc;
+use std::rc::Rc;
 
 pub type ProjectMHandle = *mut ffi::projectm;
 
@@ -180,7 +180,7 @@ impl Projectm {
             .collect();
 
         let mut texture_search_paths_pointer: Vec<_> = texture_search_paths_cstr
-            .iter() // do NOT into_iter()
+            .iter()
             .map(|arg| arg.as_ptr())
             .collect();
 
@@ -442,38 +442,46 @@ impl Projectm {
 }
 
 pub struct ProjectM {
-    instance: Arc<RefCell<ProjectMHandle>>,
+    instance: Rc<RefCell<ProjectMHandle>>,
 }
 
 impl ProjectM {
     pub fn create() -> Self {
-        let instance = Arc::new(RefCell::new(Projectm::create()));
+        let instance = Rc::new(RefCell::new(Projectm::create()));
 
         ProjectM { instance }
     }
 
     pub fn destroy(&self) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        let _ = &Projectm::destroy(*instance);
+        if let Ok(instance) = self.instance.try_borrow() {
+            let _ = &Projectm::destroy(*instance);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn load_preset_file(&self, filename: &str, smooth_transition: bool) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::load_preset_file(*instance, filename, smooth_transition);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::load_preset_file(*instance, filename, smooth_transition);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn load_preset_data(&self, data: &str, smooth_transition: bool) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::load_preset_data(*instance, data, smooth_transition);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::load_preset_data(*instance, data, smooth_transition);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn reset_textures(&self) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::reset_textures(*instance);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::reset_textures(*instance);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_version_components() -> (i32, i32, i32) {
@@ -492,198 +500,262 @@ impl ProjectM {
         &self,
         callback: F,
     ) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_preset_switch_requested_event_callback(*instance, callback);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_preset_switch_requested_event_callback(*instance, callback);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_preset_switch_failed_event_callback<F: FnMut(String, String) + 'static>(
         &self,
         callback: F,
     ) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_preset_switch_failed_event_callback(*instance, callback);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_preset_switch_failed_event_callback(*instance, callback);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_texture_search_paths(&self, texture_search_paths: &[String], count: usize) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_texture_search_paths(*instance, texture_search_paths, count);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_texture_search_paths(*instance, texture_search_paths, count);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_beat_sensitivity(&self) -> f32 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_beat_sensitivity(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_beat_sensitivity(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_beat_sensitivity(&self, sensitivity: f32) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_beat_sensitivity(*instance, sensitivity);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_beat_sensitivity(*instance, sensitivity);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_hard_cut_duration(&self) -> f64 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_hard_cut_duration(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_hard_cut_duration(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_hard_cut_duration(&self, seconds: f64) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_hard_cut_duration(*instance, seconds);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_hard_cut_duration(*instance, seconds);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_hard_cut_enabled(&self) -> bool {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_hard_cut_enabled(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_hard_cut_enabled(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_hard_cut_enabled(&self, enabled: bool) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_hard_cut_enabled(*instance, enabled);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_hard_cut_enabled(*instance, enabled);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_hard_cut_sensitivity(&self) -> f32 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_hard_cut_sensitivity(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_hard_cut_sensitivity(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_hard_cut_sensitivity(&self, sensitivity: f32) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_hard_cut_sensitivity(*instance, sensitivity);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_hard_cut_sensitivity(*instance, sensitivity);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_soft_cut_duration(&self) -> f64 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_soft_cut_duration(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_soft_cut_duration(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_soft_cut_duration(&self, seconds: f64) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_soft_cut_duration(*instance, seconds);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_soft_cut_duration(*instance, seconds);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_preset_duration(&self) -> f64 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_preset_duration(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_preset_duration(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_preset_duration(&self, seconds: f64) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_preset_duration(*instance, seconds);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_preset_duration(*instance, seconds);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_mesh_size(&self) -> (usize, usize) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_mesh_size(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_mesh_size(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_mesh_size(&self, mesh_x: usize, mesh_y: usize) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_mesh_size(*instance, mesh_x, mesh_y);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_mesh_size(*instance, mesh_x, mesh_y);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_fps(&self) -> u32 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_fps(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_fps(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_fps(&self, fps: u32) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_fps(*instance, fps);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_fps(*instance, fps);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_aspect_correction(&self) -> bool {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_aspect_correction(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_aspect_correction(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_aspect_correction(&self, enabled: bool) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_aspect_correction(*instance, enabled);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_aspect_correction(*instance, enabled);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_easter_egg(&self) -> f32 {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_easter_egg(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_easter_egg(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_easter_egg(&self, sensitivity: f32) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_easter_egg(*instance, sensitivity);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_easter_egg(*instance, sensitivity);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_preset_locked(&self) -> bool {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_preset_locked(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_preset_locked(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_preset_locked(&self, lock: bool) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_preset_locked(*instance, lock);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_preset_locked(*instance, lock);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn get_window_size(&self) -> (usize, usize) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::get_window_size(*instance)
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::get_window_size(*instance)
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn set_window_size(&self, width: usize, height: usize) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::set_window_size(*instance, width, height);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::set_window_size(*instance, width, height);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn render_frame(&self) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::render_frame(*instance);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::render_frame(*instance);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn touch(&self, x: f32, y: f32, pressure: i32, touch_type: ProjectMTouchType) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::touch(*instance, x, y, pressure, touch_type);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::touch(*instance, x, y, pressure, touch_type);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn touch_drag(&self, x: f32, y: f32, pressure: i32) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::touch_drag(*instance, x, y, pressure);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::touch_drag(*instance, x, y, pressure);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn touch_destroy(&self, x: f32, y: f32) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::touch_destroy(*instance, x, y);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::touch_destroy(*instance, x, y);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn touch_destroy_all(&self) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::touch_destroy_all(*instance);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::touch_destroy_all(*instance);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn pcm_get_max_samples() -> u32 {
@@ -691,30 +763,38 @@ impl ProjectM {
     }
 
     pub fn pcm_add_float(&self, samples: Vec<f32>, channels: ProjectMChannels) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::pcm_add_float(*instance, samples, channels);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::pcm_add_float(*instance, samples, channels);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn pcm_add_int16(&self, samples: Vec<i16>, channels: ProjectMChannels) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::pcm_add_int16(*instance, samples, channels);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::pcm_add_int16(*instance, samples, channels);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn pcm_add_uint8(&self, samples: Vec<u8>, channels: ProjectMChannels) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::pcm_add_uint8(*instance, samples, channels);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::pcm_add_uint8(*instance, samples, channels);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
     pub fn write_debug_image_on_next_frame(&self, output_file: Option<&String>) {
-        let instance = Arc::clone(&self.instance);
-        let instance = instance.borrow_mut();
-        Projectm::write_debug_image_on_next_frame(*instance, output_file);
+        if let Ok(instance) = self.instance.try_borrow() {
+            Projectm::write_debug_image_on_next_frame(*instance, output_file);
+        } else {
+            panic!("Failed to borrow instance");
+        }
     }
 
-    pub fn get_instance(&self) -> Arc<RefCell<ProjectMHandle>> {
+    pub fn get_instance(&self) -> Rc<RefCell<ProjectMHandle>> {
         self.instance.clone()
     }
 }
