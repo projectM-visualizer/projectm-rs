@@ -15,7 +15,7 @@ impl Playlist {
     /// Create a new playlist for [Projectm](ProjectMHandle)
     pub fn create(projectm: ProjectM) -> Playlist {
         let projectm = projectm.get_instance();
-        let instance = projectm.lock().unwrap();
+        let instance = projectm.borrow_mut();
 
         let playlist;
         unsafe {

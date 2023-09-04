@@ -15,8 +15,9 @@
 extern crate libc;
 extern crate projectm_sys as ffi;
 
+use std::cell::RefCell;
 use std::ffi::CString;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 pub type ProjectMHandle = *mut ffi::projectm;
 
@@ -441,33 +442,37 @@ impl Projectm {
 }
 
 pub struct ProjectM {
-    instance: Arc<Mutex<ProjectMHandle>>,
+    instance: Arc<RefCell<ProjectMHandle>>,
 }
 
 impl ProjectM {
     pub fn create() -> Self {
-        let instance = Arc::new(Mutex::new(Projectm::create()));
+        let instance = Arc::new(RefCell::new(Projectm::create()));
 
         ProjectM { instance }
     }
 
     pub fn destroy(&self) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         let _ = &Projectm::destroy(*instance);
     }
 
     pub fn load_preset_file(&self, filename: &str, smooth_transition: bool) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::load_preset_file(*instance, filename, smooth_transition);
     }
 
     pub fn load_preset_data(&self, data: &str, smooth_transition: bool) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::load_preset_data(*instance, data, smooth_transition);
     }
 
     pub fn reset_textures(&self) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::reset_textures(*instance);
     }
 
@@ -487,7 +492,8 @@ impl ProjectM {
         &self,
         callback: F,
     ) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_preset_switch_requested_event_callback(*instance, callback);
     }
 
@@ -495,157 +501,188 @@ impl ProjectM {
         &self,
         callback: F,
     ) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_preset_switch_failed_event_callback(*instance, callback);
     }
 
     pub fn set_texture_search_paths(&self, texture_search_paths: &[String], count: usize) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_texture_search_paths(*instance, texture_search_paths, count);
     }
 
     pub fn get_beat_sensitivity(&self) -> f32 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_beat_sensitivity(*instance)
     }
 
     pub fn set_beat_sensitivity(&self, sensitivity: f32) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_beat_sensitivity(*instance, sensitivity);
     }
 
     pub fn get_hard_cut_duration(&self) -> f64 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_hard_cut_duration(*instance)
     }
 
     pub fn set_hard_cut_duration(&self, seconds: f64) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_hard_cut_duration(*instance, seconds);
     }
 
     pub fn get_hard_cut_enabled(&self) -> bool {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_hard_cut_enabled(*instance)
     }
 
     pub fn set_hard_cut_enabled(&self, enabled: bool) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_hard_cut_enabled(*instance, enabled);
     }
 
     pub fn get_hard_cut_sensitivity(&self) -> f32 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_hard_cut_sensitivity(*instance)
     }
 
     pub fn set_hard_cut_sensitivity(&self, sensitivity: f32) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_hard_cut_sensitivity(*instance, sensitivity);
     }
 
     pub fn get_soft_cut_duration(&self) -> f64 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_soft_cut_duration(*instance)
     }
 
     pub fn set_soft_cut_duration(&self, seconds: f64) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_soft_cut_duration(*instance, seconds);
     }
 
     pub fn get_preset_duration(&self) -> f64 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_preset_duration(*instance)
     }
 
     pub fn set_preset_duration(&self, seconds: f64) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_preset_duration(*instance, seconds);
     }
 
     pub fn get_mesh_size(&self) -> (usize, usize) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_mesh_size(*instance)
     }
 
     pub fn set_mesh_size(&self, mesh_x: usize, mesh_y: usize) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_mesh_size(*instance, mesh_x, mesh_y);
     }
 
     pub fn get_fps(&self) -> u32 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_fps(*instance)
     }
 
     pub fn set_fps(&self, fps: u32) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_fps(*instance, fps);
     }
 
     pub fn get_aspect_correction(&self) -> bool {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_aspect_correction(*instance)
     }
 
     pub fn set_aspect_correction(&self, enabled: bool) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_aspect_correction(*instance, enabled);
     }
 
     pub fn get_easter_egg(&self) -> f32 {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_easter_egg(*instance)
     }
 
     pub fn set_easter_egg(&self, sensitivity: f32) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_easter_egg(*instance, sensitivity);
     }
 
     pub fn get_preset_locked(&self) -> bool {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_preset_locked(*instance)
     }
 
     pub fn set_preset_locked(&self, lock: bool) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_preset_locked(*instance, lock);
     }
 
     pub fn get_window_size(&self) -> (usize, usize) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::get_window_size(*instance)
     }
 
     pub fn set_window_size(&self, width: usize, height: usize) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::set_window_size(*instance, width, height);
     }
 
     pub fn render_frame(&self) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::render_frame(*instance);
     }
 
     pub fn touch(&self, x: f32, y: f32, pressure: i32, touch_type: ProjectMTouchType) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::touch(*instance, x, y, pressure, touch_type);
     }
 
     pub fn touch_drag(&self, x: f32, y: f32, pressure: i32) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::touch_drag(*instance, x, y, pressure);
     }
 
     pub fn touch_destroy(&self, x: f32, y: f32) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::touch_destroy(*instance, x, y);
     }
 
     pub fn touch_destroy_all(&self) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::touch_destroy_all(*instance);
     }
 
@@ -654,26 +691,30 @@ impl ProjectM {
     }
 
     pub fn pcm_add_float(&self, samples: Vec<f32>, channels: ProjectMChannels) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::pcm_add_float(*instance, samples, channels);
     }
 
     pub fn pcm_add_int16(&self, samples: Vec<i16>, channels: ProjectMChannels) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::pcm_add_int16(*instance, samples, channels);
     }
 
     pub fn pcm_add_uint8(&self, samples: Vec<u8>, channels: ProjectMChannels) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::pcm_add_uint8(*instance, samples, channels);
     }
 
     pub fn write_debug_image_on_next_frame(&self, output_file: Option<&String>) {
-        let instance = self.instance.lock().unwrap();
+        let instance = Arc::clone(&self.instance);
+        let instance = instance.borrow_mut();
         Projectm::write_debug_image_on_next_frame(*instance, output_file);
     }
 
-    pub fn get_instance(&self) -> Arc<Mutex<ProjectMHandle>> {
+    pub fn get_instance(&self) -> Arc<RefCell<ProjectMHandle>> {
         self.instance.clone()
     }
 }
