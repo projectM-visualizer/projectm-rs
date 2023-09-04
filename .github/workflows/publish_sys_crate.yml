@@ -1,4 +1,4 @@
-name: Publish to crates.io
+name: Publish SYS to crates.io
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   publish:
-    name: Publish
+    name: Publish_SYS
     runs-on: ubuntu-latest
 
     steps:
@@ -33,25 +33,19 @@ jobs:
 
       - name: Lint
         run: |
+          cd projectm-sys
           cargo fmt -- --check
           cargo clippy -- -D warnings
 
       - name: Run Tests
         run: |
+          cd projectm-sys
           cargo check
           # cargo test --all
-
-      - name: Wait On Publish_SYS
-        uses: tomchv/wait-my-workflow@v1.1.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: 'Publish_SYS'
-          ref: ${{ github.sha }}
-          intervalSeconds: 30
-          timeoutSeconds: 3600
 
       - name: Publish
         env:
             CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
+          cd projectm-sys
           cargo publish --token $CARGO_REGISTRY_TOKEN
