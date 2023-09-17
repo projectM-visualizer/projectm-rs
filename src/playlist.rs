@@ -13,7 +13,7 @@ pub struct Playlist {
 
 impl Playlist {
     /// Create a new playlist for [Projectm](ProjectMHandle)
-    pub fn create(projectm: ProjectM) -> Playlist {
+    pub fn create(projectm: &ProjectM) -> Playlist {
         let projectm = projectm.get_instance();
         let instance = projectm.borrow_mut();
 

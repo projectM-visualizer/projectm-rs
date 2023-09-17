@@ -801,3 +801,12 @@ impl ProjectM {
 
 unsafe impl Send for ProjectM {}
 unsafe impl Sync for ProjectM {}
+
+// allow cloning the handle
+impl Clone for ProjectM {
+    fn clone(&self) -> Self {
+        ProjectM {
+            instance: self.instance.clone(),
+        }
+    }
+}
