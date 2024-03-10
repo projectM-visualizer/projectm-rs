@@ -1,9 +1,9 @@
 [package]
 name = "projectm"
-version = "2.0.1-alpha"
+version = "4.1.0-alpha.1"
 edition = "2021"
 rust-version = "1.65"
-authors = ["AnomieVision <anomievision@gmail.com.com>"]
+authors = ["AnomieVision <anomievision@gmail.com.com>", "Mischa Spiegelmock <me@mish.dev>"
 description = "Bindings for ProjectM"
 license = "	LGPL-3.0-or-later"
 repository = "https://github.com/projectM-visualizer/projectm-rs" #https://github.com/anomievision/projectm-rs
