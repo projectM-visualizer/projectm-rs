@@ -1,30 +1,43 @@
-#[macro_use]
 extern crate lazy_static;
 
-use std::{env, path::Path, process::Command};
+use lazy_static::lazy_static;
+use std::env;
+use std::path::PathBuf;
+use std::process::{Command, Stdio};
 
 mod build_bindgen;
 use crate::build_bindgen::bindgen;
 
-lazy_static! {
-    static ref PROJECTM_BUILD: String = format!("{}/projectm", env::var("OUT_DIR").unwrap());
+fn update_submodules() -> Result<(), Box<dyn std::error::Error>> {
+    let status = Command::new("git")
+        .args(["submodule", "update", "--init", "--recursive"])
+        .stdout(Stdio::inherit()) // Optionally output stdout/stderr to help with debugging
+        .stderr(Stdio::inherit())
+        .status()?;
+
+    if !status.success() {
+        return Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Submodule update failed",
+        )));
+    }
+
+    Ok(())
 }
 
 fn main() {
-    if !Path::new(PROJECTM_BUILD.as_str()).exists() {
-        let _ = Command::new("git")
-            .args([
-                "-c",
-                "advice.detachedHead=false",
-                "clone",
-                "--recurse-submodules",
-                "--depth=1",
-                "--branch",
-                "v4.0.0",
-                "https://github.com/projectM-visualizer/projectm.git",
-                &PROJECTM_BUILD,
-            ])
-            .status();
+    let projectm_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
+
+    // Ensure the submodule is updated and initialized
+    if !projectm_path.exists() {
+        println!("cargo:warning=The libprojectM submodule is not checked out. Please run 'git submodule update --init --recursive' and try building again.");
+        std::process::exit(1);
+    }
+
+    // Attempt to update and initialize submodules recursively
+    if let Err(e) = update_submodules() {
+        println!("cargo:warning=Failed to update submodules: {}", e);
+        std::process::exit(1);
     }
 
     // Feature: enable-playlist
@@ -37,7 +50,7 @@ fn main() {
     }
 
     #[cfg(target_os = "windows")]
-    let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
+    let dst = cmake::Config::new(&*projectm_path)
         .generator("Visual Studio 17 2022")
         .define(
             "CMAKE_TOOLCHAIN_FILE",
@@ -55,17 +68,17 @@ fn main() {
         .build();
 
     #[cfg(target_os = "linux")]
-    let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
+    let dst = cmake::Config::new(&*projectm_path)
         .define("ENABLE_PLAYLIST", enable_playlist().as_str())
         .build();
 
     #[cfg(target_os = "macos")]
-    let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
+    let dst = cmake::Config::new(&*projectm_path)
         .define("ENABLE_PLAYLIST", enable_playlist().as_str())
         .build();
 
     #[cfg(target_os = "emscripten")]
-    let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
+    let dst = cmake::Config::new(&*projectm_path)
         .define("ENABLE_PLAYLIST", enable_playlist().as_str())
         .define("ENABLE_EMSCRIPTEN", "ON")
         .build();
