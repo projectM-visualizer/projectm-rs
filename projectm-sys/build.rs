@@ -87,7 +87,7 @@ fn main() {
 
     #[cfg(target_os = "linux")]
     if Ok("release".to_owned()) == env::var("PROFILE") {
-        println!("cargo:rustc-link-lib=dylib=libprojectM=4");
+        println!("cargo:rustc-link-lib=dylib=projectM-4");
 
         #[cfg(feature = "playlist")]
         println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
