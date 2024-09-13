@@ -8,7 +8,7 @@ description = "Bindings for ProjectM"
 license = "LGPL-3.0-or-later"
 repository = "https://github.com/anomievision/projectm-sys"
 documentation = "https://docs.rs/projectm-sys/latest"
-keywords = ["visualization", "audio", "sound",  "projectm"]
+keywords = ["visualization", "audio", "sound", "projectm"]
 categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
 links = "projectm"
@@ -23,3 +23,4 @@ lazy_static = "1.4.0"
 [features]
 default = ["playlist"]
 playlist = []
+static = []
