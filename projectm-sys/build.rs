@@ -28,11 +28,19 @@ fn main() {
     }
 
     // Feature: enable-playlist
-    fn enable_playlist() -> String {
+    fn enable_playlist() -> &'static str {
         if cfg!(feature = "playlist") {
-            "ON".to_string()
+            "ON"
         } else {
-            "OFF".to_string()
+            "OFF"
+        }
+    }
+
+    fn enable_static_link() -> &'static str {
+        if cfg!(feature = "static") {
+            "OFF"
+        } else {
+            "ON"
         }
     }
 
@@ -51,77 +59,55 @@ fn main() {
             "CMAKE_MSVC_RUNTIME_LIBRARY",
             "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL",
         )
-        .define("ENABLE_PLAYLIST", enable_playlist().as_str())
+        .define("ENABLE_PLAYLIST", enable_playlist())
+        .define("BUILD_SHARED_LIBS", enable_static_link())
         .build();
 
     #[cfg(target_os = "linux")]
     let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
-        .define("ENABLE_PLAYLIST", enable_playlist().as_str())
+        .define("ENABLE_PLAYLIST", enable_playlist())
+        .define("BUILD_SHARED_LIBS", enable_static_link())
         .build();
 
     #[cfg(target_os = "macos")]
     let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
-        .define("ENABLE_PLAYLIST", enable_playlist().as_str())
+        .define("ENABLE_PLAYLIST", enable_playlist())
+        .define("BUILD_SHARED_LIBS", enable_static_link())
         .build();
 
     #[cfg(target_os = "emscripten")]
     let dst = cmake::Config::new(PROJECTM_BUILD.as_str())
-        .define("ENABLE_PLAYLIST", enable_playlist().as_str())
+        .define("ENABLE_PLAYLIST", enable_playlist())
+        .define("BUILD_SHARED_LIBS", enable_static_link())
         .define("ENABLE_EMSCRIPTEN", "ON")
         .build();
 
     println!("cargo:rustc-link-search=native={}/lib", dst.display());
 
-    #[cfg(target_os = "windows")]
     if Ok("release".to_owned()) == env::var("PROFILE") {
-        println!("cargo:rustc-link-lib=dylib=projectM-4");
+        if cfg!(feature = "static") {
+            println!("cargo:rustc-link-lib=static=projectM");
 
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
+            #[cfg(feature = "playlist")]
+            println!("cargo:rustc-link-lib=static=projectM_playlist");
+        } else {
+            println!("cargo:rustc-link-lib=dylib=projectM-4");
+
+            #[cfg(feature = "playlist")]
+            println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
+        }
     } else {
-        println!("cargo:rustc-link-lib=dylib=projectM-4d");
+        if cfg!(feature = "static") {
+            println!("cargo:rustc-link-lib=static=projectMd");
 
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
-    }
+            #[cfg(feature = "playlist")]
+            println!("cargo:rustc-link-lib=static=projectM_playlistd");
+        } else {
+            println!("cargo:rustc-link-lib=dylib=projectM-4d");
 
-    #[cfg(target_os = "linux")]
-    if Ok("release".to_owned()) == env::var("PROFILE") {
-        println!("cargo:rustc-link-lib=dylib=projectM-4");
-
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
-    } else {
-        println!("cargo:rustc-link-lib=dylib=projectM-4d");
-
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
-    }
-
-    #[cfg(target_os = "macos")]
-    if Ok("release".to_owned()) == env::var("PROFILE") {
-        println!("cargo:rustc-link-lib=dylib=projectM-4");
-
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
-    } else {
-        println!("cargo:rustc-link-lib=dylib=projectM-4d");
-
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
-    }
-
-    #[cfg(target_os = "emscripten")]
-    if Ok("release".to_owned()) == env::var("PROFILE") {
-        println!("cargo:rustc-link-lib=static=projectM-4");
-
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
-    } else {
-        println!("cargo:rustc-link-lib=static=projectM-4d");
-
-        #[cfg(feature = "playlist")]
-        println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
+            #[cfg(feature = "playlist")]
+            println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
+        }
     }
 
     bindgen()
