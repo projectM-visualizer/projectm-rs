@@ -20,13 +20,13 @@ jobs:
       RUST_BACKTRACE: full
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup EMSDK
-        uses: mymindstorm/setup-emsdk@v11
+        uses: mymindstorm/setup-emsdk@v14
         with:
           # Make sure to set a version number!
-          version: 3.1.45
+          version: 3.1.69
           # This is the name of the cache folder.
           # The cache folder will be placed in the build directory,
           #  so make sure it doesn't conflict with anything!
@@ -38,7 +38,7 @@ jobs:
       - name: Install Packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev mesa-common-dev libsdl2-dev libglm-dev
+          sudo apt-get install -y gcc-multilib libgl1-mesa-dev mesa-common-dev libsdl2-dev libglm-dev
 
       - name: Update Local Toolchain
         run: |
@@ -63,4 +63,4 @@ jobs:
           # cargo test --all
 
       - name: Build Debug
-        run: cargo build --target wasm32-unknown-emscripten --no-default-features
+        run: cargo build --target wasm32-unknown-emscripten
