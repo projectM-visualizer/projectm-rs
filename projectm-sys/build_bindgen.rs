@@ -18,7 +18,7 @@ pub fn bindgen() {
         .header(get_header())
         .allowlist_function("projectm_.*")
         .clang_arg(format!("-I{}/include", out_dir.display()))
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()
         .expect("Unable to generate bindings");
 
