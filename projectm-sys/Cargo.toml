@@ -13,6 +13,9 @@ categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
 links = "projectm"
 
+include = ["src/**", "Cargo.toml", "build.rs", "README.md", "LICENSE"]
+exclude = ["docs/**", "libprojectM/docs/**", "libprojectM/web/**", "libprojectM/screenshots/**"]
+
 [dependencies]
 
 [build-dependencies]
