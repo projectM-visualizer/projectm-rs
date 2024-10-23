@@ -2,4 +2,4 @@
 	path = projectm-sys/libprojectM
 	url = https://github.com/projectM-visualizer/projectm.git
 [submodule "libprojectM"]
-	branch = v4.1.0
+	branch = v4.1.2
