@@ -1,6 +1,6 @@
 [package]
 name = "projectm"
-version = "2.0.1"
+version = "2.0.2"
 edition = "2021"
 rust-version = "1.65"
 authors = ["AnomieVision <anomievision@gmail.com.com>", "Mischa Spiegelmock <me@mish.dev>"]
