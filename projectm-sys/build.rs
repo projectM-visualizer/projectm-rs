@@ -33,7 +33,24 @@ fn main() {
 
     // Platform-specific configurations
     if cfg!(target_os = "windows") {
-        // Windows-specific configurations (if any)
+        let vcpkg_root = match env::var("VCPKG_INSTALLATION_ROOT") {
+            Ok(val) => val,
+            Err(_) => {
+                println!("cargo:warning=VCPKG_INSTALLATION_ROOT is not set. Please set it to your VCPKG installation directory.");
+                std::process::exit(1);
+            }
+        };
+        cmake_config
+            .generator("Visual Studio 17 2022")
+            .define(
+                "CMAKE_TOOLCHAIN_FILE",
+                format!("{}/scripts/buildsystems/vcpkg.cmake", vcpkg_root),
+            )
+            .define("VCPKG_TARGET_TRIPLET", "x64-windows-static-md")
+            .define(
+                "CMAKE_MSVC_RUNTIME_LIBRARY",
+                "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL",
+            );
     } else if cfg!(target_os = "emscripten") {
         cmake_config.define("ENABLE_EMSCRIPTEN", "ON");
     }

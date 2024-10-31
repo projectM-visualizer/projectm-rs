@@ -33,6 +33,7 @@ include = [
     "libprojectM/**/*.h",
     "libprojectM/**/*.hpp",
     "libprojectM/config*",
+    "libprojectM/vcpkg*",
     "bindgen/**",
 ]
 
