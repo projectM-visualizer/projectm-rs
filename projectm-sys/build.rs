@@ -71,16 +71,32 @@ fn main() {
     // Determine the library name based on the build profile
     let profile = env::var("PROFILE").unwrap_or_else(|_| "release".to_string());
 
-    // Platform-independent library linking
-    if profile == "release" {
-        println!("cargo:rustc-link-lib=dylib=projectM-4");
-        if cfg!(feature = "playlist") {
-            println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
+    // Platform-specific library linking
+    if cfg!(target_os = "windows") || cfg!(target_os = "emscripten") {
+        // Use static linking for Windows and Emscripten
+        if profile == "release" {
+            println!("cargo:rustc-link-lib=static=projectM-4");
+            if cfg!(feature = "playlist") {
+                println!("cargo:rustc-link-lib=static=projectM-4-playlist");
+            }
+        } else {
+            println!("cargo:rustc-link-lib=static=projectM-4d");
+            if cfg!(feature = "playlist") {
+                println!("cargo:rustc-link-lib=static=projectM-4-playlistd");
+            }
         }
     } else {
-        println!("cargo:rustc-link-lib=dylib=projectM-4d");
-        if cfg!(feature = "playlist") {
-            println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
+        // Use dynamic linking for other platforms (Linux, macOS)
+        if profile == "release" {
+            println!("cargo:rustc-link-lib=dylib=projectM-4");
+            if cfg!(feature = "playlist") {
+                println!("cargo:rustc-link-lib=dylib=projectM-4-playlist");
+            }
+        } else {
+            println!("cargo:rustc-link-lib=dylib=projectM-4d");
+            if cfg!(feature = "playlist") {
+                println!("cargo:rustc-link-lib=dylib=projectM-4-playlistd");
+            }
         }
     }
 
