@@ -6,12 +6,15 @@ use crate::build_bindgen::bindgen;
 
 fn main() {
     // Get the path to the projectM source code
-    let projectm_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
+    let projectm_path =
+        PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
 
     // Check if the libprojectM source code exists
     if !projectm_path.exists() {
         println!("cargo:warning=The libprojectM source code is missing.");
-        println!("cargo:warning=If you are building from a git clone, please run 'git submodule update --init --recursive'.");
+        println!(
+            "cargo:warning=If you are building from a git clone, please run 'git submodule update --init --recursive'."
+        );
         println!("cargo:warning=If you downloaded this crate from crates.io, please ensure that the crate was packaged correctly.");
         std::process::exit(1);
     }
@@ -32,12 +35,32 @@ fn main() {
             }
         };
 
+        let vcpkg_root = PathBuf::from(vcpkg_root);
+        let vcpkg_toolchain = vcpkg_root
+            .join("scripts")
+            .join("buildsystems")
+            .join("vcpkg.cmake");
+
+        if !vcpkg_toolchain.exists() {
+            println!(
+                "cargo:warning=The vcpkg toolchain file was not found at: {}",
+                vcpkg_toolchain.display()
+            );
+            std::process::exit(1);
+        }
+
+        // Set VCPKG_ROOT for CMake
+        env::set_var("VCPKG_ROOT", &vcpkg_root);
+
+        // Optionally set CMAKE_PREFIX_PATH
+        let vcpkg_installed = vcpkg_root.join("installed").join("x64-windows-static-md");
+
         // Configure and build libprojectM using CMake for Windows
         dst = cmake::Config::new(&projectm_path)
             .generator("Visual Studio 17 2022")
             .define(
                 "CMAKE_TOOLCHAIN_FILE",
-                format!("{}/scripts/buildsystems/vcpkg.cmake", vcpkg_root),
+                &vcpkg_toolchain,
             )
             .define("VCPKG_TARGET_TRIPLET", "x64-windows-static-md")
             .define(
@@ -45,6 +68,12 @@ fn main() {
                 "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL",
             )
             .define("ENABLE_PLAYLIST", enable_playlist)
+            .define(
+                "projectM_Eval_DIR",
+                &projectm_path.join("vendor").join("projectm-eval"),
+            )
+            .define("CMAKE_PREFIX_PATH", &vcpkg_installed)
+            .define("CMAKE_VERBOSE_MAKEFILE", "ON")
             .define("BUILD_TESTING", "OFF")
             .define("BUILD_EXAMPLES", "OFF")
             .build();
