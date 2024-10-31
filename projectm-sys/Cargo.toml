@@ -20,23 +20,20 @@ include = [
     "README.md",
     "LICENSE",
     "build_bindgen.rs",
-    "libprojectM/**",
+    "libprojectM/CMakeLists.txt",
+    "libprojectM/src/**",
+    "libprojectM/include/**",
+    "libprojectM/presets/CMakeLists.txt",
+    "libprojectM/cmake/**",
+    "libprojectM/vendor/**",
+    "libprojectM/vendor/projectm-eval/**",
+    "libprojectM/vendor/**/CMakeLists.txt",
+    "libprojectM/vendor/**/cmake/**",
+    "libprojectM/**/*.cmake",
+    "libprojectM/**/*.h",
+    "libprojectM/**/*.hpp",
+    "libprojectM/config*",
     "bindgen/**",
-]
-
-# Exclude unnecessary files to reduce crate size
-exclude = [
-    "docs/**",
-    "libprojectM/docs/**",
-    "libprojectM/web/**",
-    "libprojectM/screenshots/**",
-    "libprojectM/tests/**",
-    "libprojectM/examples/**",
-    "libprojectM/.git/**",
-    "libprojectM/.github/**",
-    "libprojectM/*.md",
-    ".git/**",
-    ".gitmodules",
 ]
 
 [dependencies]
