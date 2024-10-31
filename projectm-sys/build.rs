@@ -5,8 +5,7 @@ mod build_bindgen;
 use crate::build_bindgen::bindgen;
 
 fn main() {
-    let projectm_path =
-        PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
+    let projectm_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
 
     // Check if the libprojectM source code exists
     if !projectm_path.exists() {
