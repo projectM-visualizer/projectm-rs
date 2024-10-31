@@ -40,7 +40,7 @@ include = [
 
 [build-dependencies]
 cmake = "0.1.50"
-bindgen = "0.69.4"
+bindgen = "0.70.1"
 lazy_static = "1.4.0"
 
 [features]
