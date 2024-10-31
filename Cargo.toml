@@ -13,8 +13,8 @@ readme = "README.md"
 
 [dependencies]
 libc = "0.2"
-projectm-sys = { path = "projectm-sys", version = "1.0.9-rc.1", features = ["playlist"] }
-#projectm-sys = { version = "1.0.9-rc.1", features = ["playlist"] }
+#projectm-sys = { path = "projectm-sys", version = "1.0.9-rc.1", features = ["playlist"] }
+projectm-sys = { version = "1.0.9" }
 rand = "0.8"
 
 [features]
