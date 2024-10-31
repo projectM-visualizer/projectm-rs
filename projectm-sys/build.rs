@@ -6,8 +6,7 @@ use crate::build_bindgen::bindgen;
 
 fn main() {
     // Get the path to the projectM source code
-    let projectm_path =
-        PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
+    let projectm_path = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("libprojectM");
 
     // Check if the libprojectM source code exists
     if !projectm_path.exists() {
@@ -20,7 +19,11 @@ fn main() {
     }
 
     // Determine if the 'playlist' feature is enabled
-    let enable_playlist = if cfg!(feature = "playlist") { "ON" } else { "OFF" };
+    let enable_playlist = if cfg!(feature = "playlist") {
+        "ON"
+    } else {
+        "OFF"
+    };
 
     let dst;
 
@@ -58,10 +61,7 @@ fn main() {
         // Configure and build libprojectM using CMake for Windows
         dst = cmake::Config::new(&projectm_path)
             .generator("Visual Studio 17 2022")
-            .define(
-                "CMAKE_TOOLCHAIN_FILE",
-                &vcpkg_toolchain,
-            )
+            .define("CMAKE_TOOLCHAIN_FILE", &vcpkg_toolchain)
             .define("VCPKG_TARGET_TRIPLET", "x64-windows-static-md")
             .define(
                 "CMAKE_MSVC_RUNTIME_LIBRARY",
