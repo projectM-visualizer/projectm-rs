@@ -28,8 +28,13 @@ fn main() {
 
     // Platform-specific configurations
     if cfg!(target_os = "windows") {
-        // Ensure VCPKG is set up correctly
-        let vcpkg_root = env::var("VCPKG_INSTALLATION_ROOT").expect("VCPKG_INSTALLATION_ROOT is not set");
+        let vcpkg_root = match env::var("VCPKG_INSTALLATION_ROOT") {
+            Ok(val) => val,
+            Err(_) => {
+                println!("cargo:warning=VCPKG_INSTALLATION_ROOT is not set. Please set it to your VCPKG installation directory.");
+                std::process::exit(1);
+            }
+        };
         cmake_config
             .generator("Visual Studio 17 2022")
             .define(
@@ -50,7 +55,7 @@ fn main() {
     println!("cargo:rustc-link-search=native={}/lib", dst.display());
 
     // Determine the library name based on the build profile
-    let profile = env::var("PROFILE").unwrap();
+    let profile = env::var("PROFILE").unwrap_or_else(|_| "release".to_string());
     let lib_suffix = if profile == "release" { "" } else { "d" };
     let lib_name = format!("projectM-4{}", lib_suffix);
 
