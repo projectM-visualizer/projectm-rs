@@ -1,6 +1,6 @@
 [package]
 name = "projectm-sys"
-version = "4.1.2"
+version = "4.1.2-1"
 edition = "2021"
 rust-version = "1.65"
 authors = ["AnomieVision <anomievision@gmail.com.com>", "Mischa Spiegelmock <me@mish.dev>"]
@@ -13,29 +13,31 @@ categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
 links = "projectm"
 
-include = ["src/**",
+include = [
     "src/**",
     "Cargo.toml",
     "build.rs",
     "README.md",
     "LICENSE",
     "build_bindgen.rs",
-    "libprojectM/CMakeLists.txt",
-    "libprojectM/src/**",
-    "libprojectM/include/**",
-    "libprojectM/presets/**",
-    "libprojectM/cmake/**",
-    "libprojectM/vendor/**",
-    "libprojectM/vendor/projectm-eval/**",
-    "libprojectM/vendor/**/CMakeLists.txt",
-    "libprojectM/vendor/**/cmake/**",
-    "libprojectM/**/*.cmake",
-    "libprojectM/**/*.h",
-    "libprojectM/**/*.hpp",
-    "libprojectM/config*",
+    "libprojectM/**",
     "bindgen/**",
 ]
-exclude = ["docs/**", "libprojectM/docs/**", "libprojectM/web/**", "libprojectM/screenshots/**"]
+
+# Exclude unnecessary files to reduce crate size
+exclude = [
+    "docs/**",
+    "libprojectM/docs/**",
+    "libprojectM/web/**",
+    "libprojectM/screenshots/**",
+    "libprojectM/tests/**",
+    "libprojectM/examples/**",
+    "libprojectM/.git/**",
+    "libprojectM/.github/**",
+    "libprojectM/*.md",
+    ".git/**",
+    ".gitmodules",
+]
 
 [dependencies]
 
