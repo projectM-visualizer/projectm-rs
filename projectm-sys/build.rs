@@ -12,12 +12,12 @@ fn enable_playlist() -> &'static str {
         "OFF"
     }
 }
-
-fn enable_static_link() -> &'static str {
+// Are we linking to shared or static libraries?
+fn build_shared_libs_flag() -> &'static str {
     if cfg!(feature = "static") {
-        "ON"
+        "OFF" // Disable shared libs to enable static linking
     } else {
-        "OFF"
+        "ON"  // Enable shared libs
     }
 }
 
@@ -37,7 +37,7 @@ fn main() {
 
     // Determine feature flags
     let enable_playlist_flag = enable_playlist();
-    let enable_static_flag = enable_static_link();
+    let build_shared_libs = build_shared_libs_flag();
 
     let dst;
 
@@ -90,7 +90,7 @@ fn main() {
             .define("CMAKE_VERBOSE_MAKEFILE", "ON")
             .define("BUILD_TESTING", "OFF")
             .define("BUILD_EXAMPLES", "OFF")
-            .define("BUILD_SHARED_LIBS", enable_static_flag); // Integrated static linking option
+            .define("BUILD_SHARED_LIBS", build_shared_libs); // static/dynamic
 
         dst = cmake_config.build();
     } else if cfg!(target_os = "emscripten") {
@@ -100,7 +100,7 @@ fn main() {
             .define("BUILD_TESTING", "OFF")
             .define("BUILD_EXAMPLES", "OFF")
             .define("ENABLE_EMSCRIPTEN", "ON")
-            .define("BUILD_SHARED_LIBS", enable_static_flag) // Integrated static linking option
+            .define("BUILD_SHARED_LIBS", build_shared_libs) // static/dynamic
             .build();
     } else {
         // Configure and build libprojectM using CMake for other platforms (Linux, macOS)
@@ -108,7 +108,7 @@ fn main() {
             .define("ENABLE_PLAYLIST", enable_playlist_flag)
             .define("BUILD_TESTING", "OFF")
             .define("BUILD_EXAMPLES", "OFF")
-            .define("BUILD_SHARED_LIBS", enable_static_flag) // Integrated static linking option
+            .define("BUILD_SHARED_LIBS", build_shared_libs) // static/dynamic
             .build();
     }
 
@@ -120,7 +120,7 @@ fn main() {
 
     // Platform and feature-specific library linking
     if cfg!(target_os = "windows") || cfg!(target_os = "emscripten") {
-        // Static linking for Windows and Emscripten if the 'static' feature is enabled
+        // Static or Dynamic linking based on 'static' feature
         if cfg!(feature = "static") {
             if profile == "release" {
                 println!("cargo:rustc-link-lib=static=projectM-4");
@@ -134,7 +134,6 @@ fn main() {
                 }
             }
         } else {
-            // Dynamic linking if 'static' feature is not enabled
             if profile == "release" {
                 println!("cargo:rustc-link-lib=dylib=projectM-4");
                 if cfg!(feature = "playlist") {
