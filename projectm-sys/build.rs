@@ -12,6 +12,7 @@ fn enable_playlist() -> &'static str {
         "OFF"
     }
 }
+
 // Are we linking to shared or static libraries?
 fn build_shared_libs_flag() -> &'static str {
     if cfg!(feature = "static") {
@@ -71,22 +72,28 @@ fn main() {
 
         // Define the installation path for vcpkg
         let vcpkg_installed = vcpkg_root.join("installed").join("x64-windows-static-md");
+        let vcpkg_installed_str = vcpkg_installed.to_str().unwrap();
+
+        // Define projectM_Eval_DIR and store in a variable
+        let projectm_eval_dir = projectm_path.join("vendor").join("projectm-eval");
+        let projectm_eval_dir_str = projectm_eval_dir.to_str().unwrap();
+
+        // Convert vcpkg_toolchain to string
+        let vcpkg_toolchain_str = vcpkg_toolchain.to_str().unwrap();
 
         // Configure and build libprojectM using CMake for Windows
-        let mut cmake_config = cmake::Config::new(&projectm_path)
+        let mut cmake_config = cmake::Config::new(&projectm_path);
+        cmake_config
             .generator("Visual Studio 17 2022")
-            .define("CMAKE_TOOLCHAIN_FILE", &vcpkg_toolchain)
+            .define("CMAKE_TOOLCHAIN_FILE", vcpkg_toolchain_str)
             .define("VCPKG_TARGET_TRIPLET", "x64-windows-static-md")
             .define(
                 "CMAKE_MSVC_RUNTIME_LIBRARY",
                 "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL",
             )
             .define("ENABLE_PLAYLIST", enable_playlist_flag)
-            .define(
-                "projectM_Eval_DIR",
-                &projectm_path.join("vendor").join("projectm-eval"),
-            )
-            .define("CMAKE_PREFIX_PATH", &vcpkg_installed)
+            .define("projectM_Eval_DIR", projectm_eval_dir_str)
+            .define("CMAKE_PREFIX_PATH", vcpkg_installed_str)
             .define("CMAKE_VERBOSE_MAKEFILE", "ON")
             .define("BUILD_TESTING", "OFF")
             .define("BUILD_EXAMPLES", "OFF")
