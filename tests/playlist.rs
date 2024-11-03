@@ -6,7 +6,7 @@ mod playlist {
     #[test]
     fn playlist() {
         let projectm = ProjectM::create();
-        let playlist = Playlist::create(projectm);
+        let playlist = Playlist::create(&projectm);
         assert_eq!(playlist.is_empty(), true);
 
         // add ../presets to playlist
