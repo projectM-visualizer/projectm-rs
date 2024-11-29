@@ -370,7 +370,7 @@ impl Projectm {
         unsafe { ffi::projectm_pcm_get_max_samples() }
     }
 
-    fn pcm_add_float(instance: ProjectMHandle, samples: Vec<f32>, channels: ProjectMChannels) {
+    fn pcm_add_float(instance: ProjectMHandle, samples: &[f32], channels: ProjectMChannels) {
         assert!(
             samples.len() <= Self::pcm_get_max_samples() as usize,
             "Number of samples is greater than max samples"
@@ -386,7 +386,7 @@ impl Projectm {
         }
     }
 
-    fn pcm_add_int16(instance: ProjectMHandle, samples: Vec<i16>, channels: ProjectMChannels) {
+    fn pcm_add_int16(instance: ProjectMHandle, samples: &[i16], channels: ProjectMChannels) {
         assert!(
             samples.len() <= Self::pcm_get_max_samples() as usize,
             "Number of samples is greater than max samples"
@@ -402,7 +402,7 @@ impl Projectm {
         }
     }
 
-    fn pcm_add_uint8(instance: ProjectMHandle, samples: Vec<u8>, channels: ProjectMChannels) {
+    fn pcm_add_uint8(instance: ProjectMHandle, samples: &[u8], channels: ProjectMChannels) {
         assert!(
             samples.len() <= Self::pcm_get_max_samples() as usize,
             "Number of samples is greater than max samples"
@@ -762,7 +762,7 @@ impl ProjectM {
         Projectm::pcm_get_max_samples()
     }
 
-    pub fn pcm_add_float(&self, samples: Vec<f32>, channels: ProjectMChannels) {
+    pub fn pcm_add_float(&self, samples: &[f32], channels: ProjectMChannels) {
         if let Ok(instance) = self.instance.try_borrow() {
             Projectm::pcm_add_float(*instance, samples, channels);
         } else {
@@ -770,7 +770,7 @@ impl ProjectM {
         }
     }
 
-    pub fn pcm_add_int16(&self, samples: Vec<i16>, channels: ProjectMChannels) {
+    pub fn pcm_add_int16(&self, samples: &[i16], channels: ProjectMChannels) {
         if let Ok(instance) = self.instance.try_borrow() {
             Projectm::pcm_add_int16(*instance, samples, channels);
         } else {
@@ -778,7 +778,7 @@ impl ProjectM {
         }
     }
 
-    pub fn pcm_add_uint8(&self, samples: Vec<u8>, channels: ProjectMChannels) {
+    pub fn pcm_add_uint8(&self, samples: &[u8], channels: ProjectMChannels) {
         if let Ok(instance) = self.instance.try_borrow() {
             Projectm::pcm_add_uint8(*instance, samples, channels);
         } else {
