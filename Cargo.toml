@@ -14,9 +14,10 @@ readme = "README.md"
 [dependencies]
 libc = "0.2"
 #projectm-sys = { path = "projectm-sys", version = "1.0.9-rc.1", features = ["playlist"] }
-projectm-sys = { version = "1.0.10" }
+projectm-sys = { version = "1.1.0-alpha.1" }
 rand = "0.8"
 
 [features]
 default = ["playlist"]
 playlist = ["projectm-sys/playlist"]
+static = ["projectm-sys/static"]
