@@ -1,6 +1,6 @@
 [package]
 name = "projectm"
-version = "3.0.0"
+version = "3.1.0"
 edition = "2021"
 rust-version = "1.65"
 authors = ["AnomieVision <anomievision@gmail.com.com>", "Mischa Spiegelmock <me@mish.dev>"]
@@ -14,7 +14,7 @@ readme = "README.md"
 [dependencies]
 libc = "0.2"
 #projectm-sys = { path = "projectm-sys", version = "1.0.9-rc.1", features = ["playlist"] }
-projectm-sys = { version = "1.2.0" }
+projectm-sys = { version = "1.2.1" }
 rand = "0.8"
 
 [features]
