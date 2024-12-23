@@ -18,7 +18,7 @@ fn build_shared_libs_flag() -> &'static str {
     if cfg!(feature = "static") {
         "OFF" // Disable shared libs to enable static linking
     } else {
-        "ON"  // Enable shared libs
+        "ON" // Enable shared libs
     }
 }
 
