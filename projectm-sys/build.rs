@@ -182,6 +182,29 @@ fn main() {
         }
     }
 
+    // Platform-specific link flags for C++ and OpenGL
+    #[cfg(target_os = "macos")]
+    {
+        println!("cargo:rustc-link-lib=c++");
+        println!("cargo:rustc-link-lib=framework=OpenGL");
+    }
+    #[cfg(target_os = "linux")]
+    {
+        // On Linux, link stdc++ and GL.
+        println!("cargo:rustc-link-lib=stdc++");
+        println!("cargo:rustc-link-lib=GL");
+        println!("cargo:rustc-link-lib=gomp");
+    }
+    #[cfg(target_os = "windows")]
+    {
+        println!("cargo:rustc-link-lib=opengl32");
+    }
+    #[cfg(target_os = "emscripten")]
+    {
+        // Emscripten typically handles GL calls differently, so you might skip or rely on the
+        // emscripten compiler for linking.
+    }
+
     // Generate Rust bindings using bindgen
     bindgen();
 }
