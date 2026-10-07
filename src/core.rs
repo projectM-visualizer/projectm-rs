@@ -55,7 +55,7 @@ impl Projectm {
         unsafe {
             ffi::projectm_load_preset_file(
                 instance,
-                filename.as_ptr() as *mut i8,
+                filename.as_ptr() as *mut std::ffi::c_char,
                 smooth_transition,
             )
         };
@@ -63,7 +63,7 @@ impl Projectm {
 
     fn load_preset_data(instance: ProjectMHandle, data: &str, smooth_transition: bool) {
         unsafe {
-            ffi::projectm_load_preset_data(instance, data.as_ptr() as *mut i8, smooth_transition)
+            ffi::projectm_load_preset_data(instance, data.as_ptr() as *mut std::ffi::c_char, smooth_transition)
         };
     }
 
@@ -143,8 +143,8 @@ impl Projectm {
         callback: F,
     ) {
         unsafe extern "C" fn trampoline<F: FnMut(String, String)>(
-            preset_filename: *const i8,
-            message: *const i8,
+            preset_filename: *const std::ffi::c_char,
+            message: *const std::ffi::c_char,
             user_data: *mut std::os::raw::c_void,
         ) {
             let preset_filename_str = unsafe { std::ffi::CStr::from_ptr(preset_filename) };
